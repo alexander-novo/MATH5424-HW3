@@ -1,0 +1,33 @@
+{
+	"spellright.language": [
+		"en"
+	],
+	"spellright.documentTypes": [
+		"markdown"
+	],
+	"latex-workshop.latex.recipes": [
+		{
+			"name": "latexmk (lualatex)",
+			"tools": [
+				"lualatexmk"
+			]
+		}
+	],
+	"latex-workshop.latex.tools": [
+		{
+			"name": "lualatexmk",
+			"command": "latexmk",
+			"args": [
+				"-synctex=1",
+				"-shell-escape",
+				"-interaction=nonstopmode",
+				"-file-line-error",
+				"-lualatex",
+				"-outdir=%OUTDIR%",
+				"%DOC%"
+			],
+			"env": {}
+		}
+	],
+	"latex-workshop.latex.recipe.default": "first"
+}

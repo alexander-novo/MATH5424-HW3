@@ -1,0 +1,7 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QCompute the SVDs of every layer A1, A2, and A3.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThen, use the imshow command on the three low-rank approximations and plot them in the subplot(2,2,2), subplot(2,2,3), and subplot(2,2,4) spots.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QBefore start completing your code, it will help use the commands help svd, help subplot, help semilogy to understand how to use these functions.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q[rustcode]rust linenos, firstnumber=1, tabsize=2, breaklines, escapeinside = $$,\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qcompat=1.18 fillbetween\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qcompat=1.18 fillbetween\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q(From Golub and van Loan) Given \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, let \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q denote the largest singular value of \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}

@@ -1,0 +1,270 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+\usepackage[USenglish]{babel}
+\usepackage{hyperref, xurl}     % Used for better URL formatting
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype} % Help text fit on the page more, rather than spilling into the margins
+\usepackage{fancyhdr}
+\usepackage[inline]{enumitem}
+\usepackage{bm}
+\usepackage{cleveref}
+
+\usepackage{physics}
+\usepackage{pgfplots}
+\usepackage{cancel}
+\usepackage{halloweenmath}
+\usepackage[newfloat]{minted}
+\usepackage{xcolor, mdframed, fontspec}
+\usepackage{caption}
+\usepackage{tasks}
+
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+% Clickable link configuration
+\hypersetup{
+	linktoc = all,      % Have the entire TOC line link to the page
+	pdfborder = {0 0 0} % Remove link borders
+}
+
+\crefname{enumi}{part}{parts}
+
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+
+\definecolor{lightgray}{gray}{0.95}
+\newmintedfile[rustcode]{rust}{
+	linenos,
+	firstnumber=1,
+	tabsize=2,
+	% bgcolor=lightgray,
+	% frame=single,
+	breaklines,
+	% texcomments % Turned off due to the presence of _ characters in many comments
+	escapeinside = \$\$,
+}
+
+\newenvironment{code}{\captionsetup{type=listing}}{}
+\SetupFloatingEnvironment{listing}{name=Output}
+
+% Title page information
+\title{Homework 3\\{\large Math 5424}\\{\large Numerical Linear Algebra}}
+\author{Alexander Novotny\\Zuriah Quinton}
+
+% Setup headers for page numbers
+\pagestyle{fancy}
+\rhead{Novotny \& Quinton}
+\lhead{Math 5424 HW 3}
+
+\pagenumbering{arabic} % Change page numbering to lowercase roman for pre-pages
+
+\renewcommand{\qedsymbol}{$\xrightswishingghost{\phantom{text}}$}
+
+\newcommand{\comp}  {\mathbb{C}}
+\newcommand{\reals} {\mathbb{R}}
+\newcommand{\ints}  {\mathbb{Z}}
+\newcommand{\mat}[1]{\bm{#1}}
+\newcommand{\fexp}[1]{\phantom{^{#1}}2^{#1}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\cond}{cond}
+\DeclareMathOperator{\fl}{fl}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\range}{Range}
+\DeclareMathOperator{\nullsp}{Null}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}[leftmargin=\labelsep]
+	% 1
+	\item Let A be \(n \times m\) with \(n > m\). Show that \(\|\mat{A}^\top\mat{A}\|_2 = \|\mat{A}\|_2^2\) and \(\kappa_2 (\mat{A}^\top\mat{A}) = \kappa_2 (\mat{A})^2\).
+
+	      Let \(M\) be \(n \times n\) and positive definite and L be its Cholesky factor so that \(M = \mat{L}\mat{L}^\top\). Show that \(\|M\|_2 = \|L\|_2^2\) and \(\kappa_2(\mat{M}) = \kappa_2(\mat{L})^2\).
+	      \begin{proof}
+
+	      \end{proof}
+
+	      % 2
+	\item In this question we will ask how to solve \(\mat{B}\vec{y} = \vec{c}\) given a fast way to solve \(\mat{A}\vec{x} = \vec{b}\), where \(\mat{A} - \mat{B}\) is "small" in some sense.
+	      \begin{enumerate}
+		      \item Prove the \emph{Sherman-Morrison formula}: Let \(\mat{A}\) be nonsingular, \(\vec{u}\) and \(\vec{v}\) be column vectors, and \(\mat{A} + \vec{u}\vec{v}^\top\) be nonsingular. Then \((\mat{A} + \vec{u}\vec{v}^\top)^{-1} = \mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})\)
+
+		            More generally, prove the \emph{Sherman-Morrison-Woodbury formula}: Let \(\mat{U}\) and \(\mat{V}\) be \(n \times k\) rectangular matrices, where \(k < n\) and \(\mat{A}\) is \(n \times n\). Then \(\mat{T} = \mat{I} + \mat{V}^\top \mat{A}^{-1} \mat{U}\) is nonsingular if and only if \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular, in which case \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}T^{-1} \mat{V}^\top \mat{A}^{-1}\).
+		            \begin{proof}
+
+		            \end{proof}
+
+		      \item If you have a fast algorithm to solve \(\mat{A}\vec{x} = \vec{b}\), show how to build a fast solver for \(\mat{B}\vec{y} = \vec{c}\), where \(\mat{B} = \mat{A} + \vec{u}\vec{v}^\top\).
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item Suppose that \(\|\mat{A}-\mat{B}\|\) is ``small'' and you have a fast algorithm for solving \(\mat{A}\vec{x} = \vec{b}\). Describe an iterative scheme for solving \(\mat{B}\vec{y} = \vec{c}\). How fast do you expect your algorithm to converge? Hint: Use iterative refinement.
+		            \begin{answer}
+
+		            \end{answer}
+	      \end{enumerate}
+
+	      % 3
+	\item Consider the linear system \(\mat{A}\vec{x} = \vec{b}\) where
+	      \[
+		      \mat{A} = \begin{bmatrix}
+			      2 & 1 & 1 & 0 \\
+			      4 & 3 & 3 & 1 \\
+			      8 & 7 & 9 & 5 \\
+			      6 & 7 & 9 & 8
+		      \end{bmatrix}
+		      \quad \text{and} \quad
+		      \vec{b} = \begin{bmatrix}
+			      4 \\ 11 \\ 29 \\ 30
+		      \end{bmatrix}.
+	      \]
+	      \begin{enumerate}
+		      \item Calculate the appropriate determinants to show that \(\mat{A}\) can be written as \(\mat{A} = \mat{L}\mat{U}\) where \(\mat{L}\) is a unit lower triangular matrix and \(\mat{U}\) is a non-singular upper triangular matrix. You may use MATLAB to compute the determinants. But the remaining parts of this problem should be done by paper-and-pencil.
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item Compute the LU decomposition \(\mat{A} = \mat{L}\mat{U}\) and convert \(\mat{A}x = b\) into \(\mat{U}x = y\) where \(\mat{U}\) is upper triangular and solve for \(x\).
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item Using \(\mat{L}\) and \(\mat{U}\) from the earlier steps, solve the new system \(\mat{A}\tilde{x} = \tilde{b}\) where
+		            \[
+			            \tilde{b} =
+			            \begin{bmatrix}
+				            5 \\ 15 \\ 41 \\ 45
+			            \end{bmatrix}.
+		            \]
+		            Do NOT perform the Gaussian elimination from scratch. You already have \(\mat{U}\) and \(\mat{L}\).
+		            \begin{answer}
+
+		            \end{answer}
+	      \end{enumerate}
+
+	      % 4
+	\item Let \(\mat{A}\) have the following economy (thin) SVD:
+	      \[
+		      \mat{A} = \begin{bmatrix}
+			      1 & 0    \\
+			      0 & 0.6  \\
+			      0 & -0.8
+		      \end{bmatrix}
+		      \begin{bmatrix}
+			      4 & 0 \\
+			      0 & 3
+		      \end{bmatrix}
+		      \begin{bmatrix}
+			      0.6  & -0.8 \\
+			      -0.8 & -0.6 \\
+		      \end{bmatrix}^\top.
+	      \]
+	      Answer the following questions without forming \(\mat{A}\) and without using Matlab. None of these questions require using numerical software. At most, you need to be able to perform simple matrix arithmetic using paper-and-pencil.
+	      \begin{enumerate}
+		      \item Find \(\rank(\mat{A}),\ \|\mat{A}\|_2\) and \(\|\mat{A}\|_F\).
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item Find an orthonormal basis for \(\range(\mat{A}),\ \nullsp(\mat{A}),\ \range(\mat{A}^\top)\), and \(\nullsp(\mat{A}^\top)\).
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item Form the optimal rank-1 approximation \(\mat{A}_1\) to \(\mat{A}\) in the 2-norm? What is the error matrix \(\mat{A} - \mat{A}_1\), and what is the norm of the error \(\|\mat{A} - \mat{A}_1\|_2\)? The error matrix and the norm of the error follow directly from the SVD; no computation is needed.
+		            \begin{answer}
+
+		            \end{answer}
+	      \end{enumerate}
+
+	      % 5
+	\item (From Golub and van Loan) Given \(\mat{A} \in \reals^{m \times n}\), let \(\sigma_1\) denote the largest singular value of \(\mat{A}\). Prove that
+	      \[
+		      \sigma_1(\mat{A}) = \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2}.
+	      \]
+	      \begin{proof}
+
+	      \end{proof}
+
+	      % 6
+	\item Let \(\mat{A} \in \reals^{m \times n}\) have the singular value decomposition
+	      \[
+		      \mat{A} = \sum_{j = 1}^r \sigma_j \vec{u}_j\vec{v}_j^\top.
+	      \]
+	      We showed in class that the matrix
+	      \[
+		      \mat{A}_k = \sum_{j = 1}^k \sigma_j \vec{u}_j\vec{v}_j^\top
+	      \]
+	      is an optimal rank-\(k\) approximation to \(\mat{A}\) in the 2-norm and \(\|\mat{A} - \mat{A}_k\| = \sigma_{k+1}\). But this minimizer (optimal approximant) is not unique. In other words, using truncated SVD we can find another rank-\(k\) matrix \(\tilde{\mat{A}}_k \in \reals^{m\times n}\) such that \(\|\mat{A} - \tilde{\mat{A}}_k\| = \sigma_{k+1}\). In this problem, you will prove this fact.
+
+	      Define
+	      \begin{equation}
+		      \tilde{\mat{A}}_k = \sum_{j = 1}^k(\sigma_j - \eta_j)\vec{u}_j\vec{v}_j^\top \quad \text{where} \quad 0 \leq |\eta_j| < \sigma_{k + 1}. \label{eq:a-tilde}
+	      \end{equation}
+	      Show that has \(\tilde{\mat{A}}_k\) in \eqref{eq:a-tilde} has rank-\(k\) and minimizes the error, i.e, \(\|\mat{A} - \tilde{\mat{A}}_k\| = \sigma_{k+1}\).
+	      \begin{proof}
+
+	      \end{proof}
+
+	      % 7
+	\item Approximation of a Fingerprint Image via SVD: You will complete the Matlab Script \texttt{Homework3Problem7.m} to answer this question. You will attach the completed script to the .pdf file.
+
+	      Before start completing your code, it will help use the commands \texttt{help svd}, \texttt{help subplot}, \texttt{help semilogy} to understand how to use these functions.
+
+	      Lines 7-10 load the image into Matlab and plot it. The resulting matrix \(\mat{A}\) in your workspace is a \(1133 \times 784\) matrix with entries consisting of only ones and zeroes; ones correspond to the white spots in the image and zeroes to the black spots.
+	      \begin{enumerate}
+		      \item Compute the short (reduced) SVD of \(\mat{A}\) using Matlab. Then plot the normalized singular values under \texttt{subplot(2,1,2)}. This figure might be hard to read due to the scale of the \(y\)-axis. Then plot only the leading 700 normalized singular values under \texttt{subplot(2,1,2)}. What do you observe? What would be your decision for the (numerical) rank of \(\mat{A}\) based on these comments? Justify your reasoning. Does the result of the built-in rank command coincide with your decision?
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for\( k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
+		            \begin{answer}
+
+		            \end{answer}
+	      \end{enumerate}
+
+	      % 8
+	\item In the previous problem you used SVD to compress a black-and-white image. In this example, you will use SVD to compute a low-rank approximation to the color image hokiebirdwithacat.jpg. You will complete the Matlab Script Homework3Problem8.m to answer this question. You will attach the completed script to the .pdf file.
+
+	      Lines 7–20 load the image into Matlab, plot the original image, and extract the images correspond to every color layer, and convert these three layer images to double precision matrices A1, A2, and A3.
+	      \begin{enumerate}
+		      \item Compute the SVDs of every layer A1, A2, and A3. Then compute the vector of normalized singular values for every layer. Using the subplot comment (and logarithmic y-axis), plot all three vectors in Figure 2.
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item \underline{Use the same error tolerance for every layer}: Find the smallest rank-k for each layer such that the relative error in each layer is less than
+
+		            \begin{tasks}[label = {(\roman*)}, label-width = 1.75em, label-offset = 0em](5)
+			            \task*(1)[]
+			            \task 10\%
+			            \task 5\%
+			            \task 1\%
+			            \task*(1)[]
+		            \end{tasks}
+
+		            So, you will have three approximations. For each case, plot the low-rank image (either as a new figure or all in one plot using subplot). These plots need to be attached to the .pdf file. Make sure to clearly indicate the rank of ever layer and which plot corresponds to which error tolerance. Did you obtain the same k value for every layer? Comment on your results.
+		            \begin{answer}
+
+		            \end{answer}
+
+		      \item \underline{Use different error tolerances for different layers}: Now we will choose different tolerances for different values. Pick three different selections:
+		            \begin{itemize}
+			            \item 50\% error for Layer 1, 1\% error for Layer 2, and 1\% error for Layer 3,
+			            \item 1\% error for Layer 1, 50\% error for Layer 2, and 1\% error for Layer 3,
+			            \item 1\% error for Layer 1, 1\% error for Layer 2, and 50\% error for Layer 3,
+		            \end{itemize}
+		            So, you will have three approximations. For each case, plot the low-rank image (either as a new figure or all in one plot using subplot). These plots need to be attached to the .pdf file. Make sure to clearly indicate the rank of ever layer and which plot corresponds to which error tolerance. Comment on your results.
+		            \begin{answer}
+
+		            \end{answer}
+	      \end{enumerate}
+\end{enumerate}
+
+\end{document}
