@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=.75in]{geometry}
 \usepackage{amsmath,amsthm,amsfonts,mathtools}
 \usepackage[USenglish]{babel}
 \usepackage{hyperref, xurl}     % Used for better URL formatting
@@ -89,24 +89,46 @@
 	      \end{proof}
 
 	      % 2
-	\item In this question we will ask how to solve \(\mat{B}\vec{y} = \vec{c}\) given a fast way to solve \(\mat{A}\vec{x} = \vec{b}\), where \(\mat{A} - \mat{B}\) is "small" in some sense.
+	\item In this question we will ask how to solve \(\mat{B}\vec{y} = \vec{c}\) given a fast way to solve \(\mat{A}\vec{x} = \vec{b}\), where \(\mat{A} - \mat{B}\) is ``small'' in some sense.
 	      \begin{enumerate}
-		      \item Prove the \emph{Sherman-Morrison formula}: Let \(\mat{A}\) be nonsingular, \(\vec{u}\) and \(\vec{v}\) be column vectors, and \(\mat{A} + \vec{u}\vec{v}^\top\) be nonsingular. Then \((\mat{A} + \vec{u}\vec{v}^\top)^{-1} = \mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})\)
+		      \item Prove the \emph{Sherman-Morrison formula}: Let \(\mat{A}\) be nonsingular, \(\vec{u}\) and \(\vec{v}\) be column vectors, and \(\mat{A} + \vec{u}\vec{v}^\top\) be nonsingular. Then \((\mat{A} + \vec{u}\vec{v}^\top)^{-1} = \mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})\). \label{item:sherman-morrison}
 
-		            More generally, prove the \emph{Sherman-Morrison-Woodbury formula}: Let \(\mat{U}\) and \(\mat{V}\) be \(n \times k\) rectangular matrices, where \(k < n\) and \(\mat{A}\) is \(n \times n\). Then \(\mat{T} = \mat{I} + \mat{V}^\top \mat{A}^{-1} \mat{U}\) is nonsingular if and only if \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular, in which case \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}T^{-1} \mat{V}^\top \mat{A}^{-1}\).
+		            More generally, prove the \emph{Sherman-Morrison-Woodbury formula}: Let \(\mat{U}\) and \(\mat{V}\) be \(n \times k\) rectangular matrices, where \(k < n\) and \(\mat{A}\) is \(n \times n\). Then \(\mat{T} = \mat{I} + \mat{V}^\top \mat{A}^{-1} \mat{U}\) is nonsingular if and only if \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular, in which case \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}\).
 		            \begin{proof}
+			            First, we have
+			            \begin{align*}
+				            (\mat{A} + \vec{u}\vec{v}^\top) \qty(\mat{A}^{-1} - \frac{\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}) & = \cancelto{\mat{I}}{\mat{A}\mat{A}^{-1}} - \frac{\cancel{\mat{A}\mat{A}^{-1}}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}} + \vec{u}\vec{v}^\top\mat{A}^{-1} - \frac{\vec{u}\vec{v}^\top\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}} \\
+				                                                                                                                                                           & = \mat{I} - \frac{\vec{u}\vec{v}^\top\mat{A}^{-1} - \vec{u}\vec{v}^\top\mat{A}^{-1}(1 + \vec{v}^\top \mat{A}^{-1} \vec{u}) + \vec{u}\vec{v}^\top\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}                                                                    \\
+				                                                                                                                                                           & = \mat{I} - \frac{\cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}} - \cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}} - \vec{u}\vec{v}^\top\mat{A}^{-1}\vec{v}^\top \mat{A}^{-1} \vec{u} + \vec{u}\vec{v}^\top\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}                      \\
+				                                                                                                                                                           & = \mat{I} - \frac{\vec{v}^\top \mat{A}^{-1} \vec{u}(- \cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}} + \cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}})}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}                                                                                                                     \\
+				                                                                                                                                                           & = \mat{I},
+			            \end{align*}
+			            so \((\mat{A} + \vec{u}\vec{v}^\top)^{-1} = \mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})\). Then, assume \(\mat{T} = \mat{I} + \mat{V}^\top \mat{A}^{-1} \mat{U}\) is nonsingular. We have
+			            \begin{align*}
+				            (\mat{A} + \mat{U}\mat{V}^\top )(\mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}) & = \cancelto{\mat{I}}{\mat{A}\mat{A}^{-1}} - \cancel{\mat{A}\mat{A}^{-1}} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}                           \\
+				                                                                                                                        & \phantom{{}=}+ \mat{U}\mat{V}^\top\mat{A}^{-1} - \mat{U}\mat{V}^\top\mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}                   \\
+				                                                                                                                        & = \mat{I} - \mat{U}(\mat{T}^{-1} - \mat{I} + \underbrace{\mat{V}^\top\mat{A}^{-1}\mat{U}}_{\mat{T}-\mat{I}}\mat{T}^{-1})\mat{V}^\top\mat{A}^{-1} \\
+				                                                                                                                        & = \mat{I} - \mat{U}(\cancel{\mat{T}^{-1}} - \cancel{\mat{I}} + \cancel{\mat{T}\mat{T}^{-1}} - \cancel{\mat{T}^{-1}})\mat{V}^\top\mat{A}^{-1}     \\
+				                                                                                                                        & = \mat{I},
+			            \end{align*}
+			            so \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular and \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}\).
 
+			            % TODO: Reverse implication
 		            \end{proof}
 
 		      \item If you have a fast algorithm to solve \(\mat{A}\vec{x} = \vec{b}\), show how to build a fast solver for \(\mat{B}\vec{y} = \vec{c}\), where \(\mat{B} = \mat{A} + \vec{u}\vec{v}^\top\).
 		            \begin{answer}
+			            We have
+			            \begin{align*}
+				            \vec{y} & = \mat{B}^{-1} \vec{c}                                                                                                                                              \\
+				                    & = (\mat{A} + \vec{u}\vec{v}^\top)^{-1} \vec{c}                                                                                                                      \\
+				                    & \stackrel{\mathclap{\ref{item:sherman-morrison}}}{=} (\mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})) \vec{c} \\
+				                    & = \mat{A}^{-1}\vec{c} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}\vec{c})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u}).
+			            \end{align*}
 
+			            % TODO: Finish algorithm
 		            \end{answer}
 
-		      \item Suppose that \(\|\mat{A}-\mat{B}\|\) is ``small'' and you have a fast algorithm for solving \(\mat{A}\vec{x} = \vec{b}\). Describe an iterative scheme for solving \(\mat{B}\vec{y} = \vec{c}\). How fast do you expect your algorithm to converge? Hint: Use iterative refinement.
-		            \begin{answer}
-
-		            \end{answer}
 	      \end{enumerate}
 
 	      % 3
@@ -168,7 +190,10 @@
 	      \begin{enumerate}
 		      \item Find \(\rank(\mat{A}),\ \|\mat{A}\|_2\) and \(\|\mat{A}\|_F\).
 		            \begin{answer}
-
+			            We have
+			            \begin{align*}
+				            \rank(\mat{A}) & = 2,
+			            \end{align*}
 		            \end{answer}
 
 		      \item Find an orthonormal basis for \(\range(\mat{A}),\ \nullsp(\mat{A}),\ \range(\mat{A}^\top)\), and \(\nullsp(\mat{A}^\top)\).
