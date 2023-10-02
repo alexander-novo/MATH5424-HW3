@@ -111,9 +111,16 @@
 				                                                                                                                        & = \mat{I} - \mat{U}(\cancel{\mat{T}^{-1}} - \cancel{\mat{I}} + \cancel{\mat{T}\mat{T}^{-1}} - \cancel{\mat{T}^{-1}})\mat{V}^\top\mat{A}^{-1}     \\
 				                                                                                                                        & = \mat{I},
 			            \end{align*}
-			            so \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular and \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}\).
-
-			            % TODO: Reverse implication
+			            so \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular and \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}\). Finally, assume \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular and \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1}\) for some \(\mat{B},\ k \times k\). Then we have
+			            \begin{alignat*}{4}
+				                     &  & \mat{I} & = (\mat{A} + \mat{U}\mat{V}^\top )(\mat{A} + \mat{U}\mat{V}^\top )^{-1}                                                                                                                                                       \\
+				                     &  &         & = (\mat{A} + \mat{U}\mat{V}^\top)(\mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1})                                                                                                                       \\
+				                     &  &         & = \cancelto{\mat{I}}{\mat{A}\mat{A}^{-1}} - \cancel{\mat{A}\mat{A}^{-1}}\mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1} + \mat{U}\mat{V}^\top\mat{A}^{-1} - \mat{U}\mat{V}^\top\mat{A}^{-1} \mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1} \\
+				            \implies &  & \mat{0} & = \mat{U}(- \mat{B} + \mat{I} - \mat{V}^\top\mat{A}^{-1} \mat{U}\mat{B} )\mat{V}^\top \mat{A}^{-1}                                                                                                                            \\
+				            \implies &  & \mat{0} & = \mat{I} - \underbrace{(\mat{I} + \mat{V}^\top\mat{A}^{-1} \mat{U})}_{\mat{T}}\mat{B}                                                                                                                                        \\
+				            \implies &  & \mat{I} & = \mat{T}\mat{B},
+			            \end{alignat*}
+			            therefore \(\mat{T}\) is invertible and non-singular, and \(\mat{B} = \mat{T}^{-1}\).
 		            \end{proof}
 
 		      \item If you have a fast algorithm to solve \(\mat{A}\vec{x} = \vec{b}\), show how to build a fast solver for \(\mat{B}\vec{y} = \vec{c}\), where \(\mat{B} = \mat{A} + \vec{u}\vec{v}^\top\).
@@ -123,7 +130,7 @@
 				            \vec{y} & = \mat{B}^{-1} \vec{c}                                                                                                                                              \\
 				                    & = (\mat{A} + \vec{u}\vec{v}^\top)^{-1} \vec{c}                                                                                                                      \\
 				                    & \stackrel{\mathclap{\ref{item:sherman-morrison}}}{=} (\mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})) \vec{c} \\
-				                    & = \mat{A}^{-1}\vec{c} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}\vec{c})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u}).
+				                    & = \mat{A}^{-1}\vec{c} - (\mat{A}^{-1}\vec{u})\vec{v}^\top(\mat{A}^{-1}\vec{c})/(1 + \vec{v}^\top (\mat{A}^{-1} \vec{u})).
 			            \end{align*}
 
 			            % TODO: Finish algorithm
