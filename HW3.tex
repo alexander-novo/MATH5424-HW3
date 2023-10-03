@@ -76,6 +76,7 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator{\range}{Range}
 \DeclareMathOperator{\nullsp}{Null}
+\DeclareMathOperator{\spn}{span}
 
 \begin{document}
 
@@ -211,18 +212,87 @@
 		            \begin{answer}
 			            We have
 			            \begin{align*}
-				            \rank(\mat{A}) & = 2,
+				            \rank(\mat{A}) & = 2,                                                                                                   \\
+				            \|\mat{A}\|_2  & = \max_i \sqrt{\lambda_i(A^\top A)}                                                                    \\
+				                           & = \sqrt{\sigma_1^2(\mat{A})}                                                                           \\
+				                           & = |\sigma_1(\mat{A})| = 4,                                                                             \\
+				            \|\mat{A}\|_F  & = \sqrt{\trace((\mat{U}\mat{\Sigma}\mat{V}^\top)^\top(\mat{U}\mat{\Sigma}\mat{V}^\top))}               \\
+				                           & = \sqrt{\trace(\cancel{\mat{V}^\top\mat{V}}\mat{\Sigma}^\top\cancel{\mat{U}^\top\mat{U}}\mat{\Sigma})} \\
+				                           & = \sqrt{\trace^2(\mat{\Sigma})}                                                                        \\
+				                           & = |\trace(\mat{\Sigma})|                                                                               \\
+				                           & = 4 + 3 = 7.
 			            \end{align*}
 		            \end{answer}
 
 		      \item Find an orthonormal basis for \(\range(\mat{A}),\ \nullsp(\mat{A}),\ \range(\mat{A}^\top)\), and \(\nullsp(\mat{A}^\top)\).
 		            \begin{answer}
-
+			            We have
+			            \begin{alignat*}{4}
+				            \range(\mat{A})       & = \spn \qty{\begin{bmatrix}1\\ 0\\ 0\end{bmatrix}, \begin{bmatrix} 0\\ 0.6\\ -0.8\end{bmatrix}},                   \\
+				            \nullsp(\mat{A})      & = \spn \emptyset,                                                                                                  \\
+				            \range(\mat{A}^\top)  & = \spn \qty{\begin{bmatrix}0.6\\ -0.8\end{bmatrix}, \begin{bmatrix}-0.8\\ -0.6\end{bmatrix}},                      \\
+				            \nullsp(\mat{A}^\top) & = \reals^3 \setminus \spn \qty{\begin{bmatrix}1\\ 0\\ 0\end{bmatrix}, \begin{bmatrix} 0\\ 0.6\\ -0.8\end{bmatrix}} \\
+				                                  & = \spn \qty{\begin{bmatrix} 0\\ 0.8\\ 0.6\end{bmatrix}}.
+			            \end{alignat*}
+			            Note that the given sets consist of orthogonal unit vectors, so they are orthonormal bases for the sets which they span.
 		            \end{answer}
 
 		      \item Form the optimal rank-1 approximation \(\mat{A}_1\) to \(\mat{A}\) in the 2-norm? What is the error matrix \(\mat{A} - \mat{A}_1\), and what is the norm of the error \(\|\mat{A} - \mat{A}_1\|_2\)? The error matrix and the norm of the error follow directly from the SVD; no computation is needed.
 		            \begin{answer}
-
+			            We have
+			            \begin{align*}
+				            \mat{A}_1                 & = \begin{bmatrix}
+					                                          1 & 0    \\
+					                                          0 & 0.6  \\
+					                                          0 & -0.8
+				                                          \end{bmatrix}
+				            \begin{bmatrix}
+					            4 & 0 \\
+					            0 & 0
+				            \end{bmatrix}
+				            \begin{bmatrix}
+					            0.6  & -0.8 \\
+					            -0.8 & -0.6 \\
+				            \end{bmatrix}^\top                                                                                \\
+				                                      & = \begin{bmatrix}
+					                                          1 \\
+					                                          0 \\
+					                                          0
+				                                          \end{bmatrix}
+				            \begin{bmatrix}
+					            4
+				            \end{bmatrix}
+				            \begin{bmatrix}
+					            0.6  \\
+					            -0.8 \\
+				            \end{bmatrix}^\top,                                                                               \\
+				            \mat{A} - \mat{A}_1       & = \begin{bmatrix}
+					                                          1 & 0    \\
+					                                          0 & 0.6  \\
+					                                          0 & -0.8
+				                                          \end{bmatrix} \qty(\begin{bmatrix}
+						                                                             4 & 0 \\
+						                                                             0 & 3
+					                                                             \end{bmatrix} - \begin{bmatrix}
+						                                                                             4 & 0 \\
+						                                                                             0 & 0
+					                                                                             \end{bmatrix})\begin{bmatrix}
+					                                                                                           0.6  & -0.8 \\
+					                                                                                           -0.8 & -0.6 \\
+				                                                                                           \end{bmatrix}^\top \\
+				                                      & = \begin{bmatrix}
+					                                          1 & 0    \\
+					                                          0 & 0.6  \\
+					                                          0 & -0.8
+				                                          \end{bmatrix}\begin{bmatrix}
+					                                                       0 & 0 \\
+					                                                       0 & 3
+				                                                       \end{bmatrix}\begin{bmatrix}
+					                                                                    0.6  & -0.8 \\
+					                                                                    -0.8 & -0.6 \\
+				                                                                    \end{bmatrix}^\top,                       \\
+				            \|\mat{A} - \mat{A}_1\|_2 & = 3.
+			            \end{align*}
 		            \end{answer}
 	      \end{enumerate}
 
