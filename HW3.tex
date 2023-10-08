@@ -61,7 +61,7 @@
 
 \pagenumbering{arabic} % Change page numbering to lowercase roman for pre-pages
 
-\renewcommand{\qedsymbol}{$\xrightswishingghost{\phantom{text}}$}
+\renewcommand{\qedsymbol}{$\bigpumpkin$}
 
 \newcommand{\comp}  {\mathbb{C}}
 \newcommand{\reals} {\mathbb{R}}
@@ -75,6 +75,8 @@
 \DeclareMathOperator{\range}{Range}
 \DeclareMathOperator{\nullsp}{Null}
 
+\newtheorem{lemma}{Lemma}
+
 \begin{document}
 
 \maketitle
@@ -86,10 +88,68 @@
 	      Let \(M\) be \(n \times n\) and positive definite and L be its Cholesky factor so that \(M = \mat{L}\mat{L}^\top\). Show that \(\|M\|_2 = \|L\|_2^2\) and \(\kappa_2(\mat{M}) = \kappa_2(\mat{L})^2\).
 	      \begin{proof}
 				We have 
+				\begin{equation*}
+					\norm{\mat{A}^\top \mat{A}}_2 = \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) } %\label{eq:2normnormal}
+				\end{equation*}
+				since \(\mat{A}^\top \mat{A}\) is normal, and
+				\begin{equation*}
+					\norm{\mat{A}}^2_2 = \sqrt{ \max_i \lambda_i(\mat{A}^\top \mat{A}) } ^2= \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) }.
+				\end{equation*}
+				So \(\|\mat{A}^\top\mat{A}\|_2 = \|\mat{A}\|_2^2\).
+
+				Next, we have 
 				\begin{align*}
-					\norm{\mat{A}^\top \mat{A}}_2 &= \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) }
+					\kappa_2(\mat{A}^\top \mat{A}) & = \norm{(\mat{A}^\top \mat{A})^{-1}}_2 \norm{\mat{A}^\top \mat{A}}_2 \\
+					                               & = \max_i \abs{ \lambda_i((\mat{A}^\top \mat{A})^{-1} )} \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) } \\
+									               & = \frac{1}{\sigma_m^2} \sigma_1^2 \\
+									               & = \frac{\sigma_1^2}{\sigma_m^2},
 				\end{align*}
+				where \(\sigma_i\) is the \(i^{\text{th}}\) singular value of \(\mat{A}\) in descending order. Further,
+				\begin{align*}
+					\kappa_2(\mat{A})^2 & = \qty(\frac{\sigma_1}{\sigma_m})^2 \\
+					                    & = \frac{\sigma_1^2}{\sigma_m^2}.
+				\end{align*}
+				Note, we may have \(\sigma_m=0\) if TODO CHECK WORDING \(\mat{A}\) is not full rank. In this case, we still have \(\kappa_2(\mat{A}^\top \mat{A})=\infty=\kappa_2(\mat{A})^2\).
+
+				Next, for \(\mat{M} = \mat{L}\mat{L}^\top\), we have 
+				\begin{align*}
+					\norm{\mat{M}}_2 & = \norm{\mat{L}\mat{L}^\top}_2 = \max_i \abs{ \lambda_i(\mat{L}\mat{L}^\top) } \\
+					\text{and }\norm{\mat{L}}_2^2 &= \sqrt{\max_i\lambda_i(\mat{L}^\top\mat{L})}^2 = \max_i \abs{ \lambda_i(\mat{L}^\top\mat{L}) }.
+				\end{align*}
+				By \cref{lem:eigenvalsLLT} these are equivalent.
+
+				Finally, for the condition number of \(\mat{M}\) we have
+				\begin{align*}
+					\kappa_2(\mat{M}) & = \kappa_2(\mat{L}\mat{L}^\top) \\
+					                  & = \norm{(\mat{L}\mat{L}^\top)^{-1}}_2 \norm{\mat{L}\mat{L}^\top}_2 \\
+									  & = \max_i \abs{ \lambda_i\qty((\mat{L}\mat{L}^\top)^{-1} )} \max_i \abs{ \lambda_i(\mat{L}\mat{L}^\top) } \\
+									  & = \frac{1}{\lambda_m} \lambda_1 \\
+									  & = \frac{\sigma_1^2}{\sigma_m^2}.
+				\end{align*}
+				Since \(\mat{M}\) is positive definite, we know \(\sigma_i>0\) for all \(i\), so this value is finite. Further,
+				\begin{align*}
+					\kappa_2(\mat{L})^2 & = \qty(\frac{\sigma_1}{\sigma_m})^2 \\
+					                    & = \frac{\sigma_1^2}{\sigma_m^2}.
+				\end{align*}
+				Thus, \(\kappa_2(\mat{M}) = \kappa_2(\mat{L})^2\).
 	      \end{proof}
+
+		  % lemma for 1
+		  \begin{lemma}\label{lem:eigenvalsLLT}
+			If \(\vec{v}\) is an eigenvector of \(\mat{L}\mat{L}^\top\), with \(\lambda\) its eigenvalue, then \(\lambda\) is an eigenvalue of \(\mat{L}^\top\mat{L}\), with eigenvector \(\mat{L}^\top \vec{v}\).
+		  \end{lemma}
+		  \begin{proof}
+			We have 
+			\begin{alignat}{4}
+				         && \mat{L}\mat{L}^\top \vec{v} & = \lambda \vec{v} \label{eq:eigenval}\\
+				\implies && \qty(\mat{L}^\top\mat{L}) \qty(\mat{L}^\top \vec{v}) & = \lambda \qty(\mat{L}^\top\vec{v}).\nonumber
+			\end{alignat}
+			For \(\vec{v}\not\in\ker(\mat{L}^\top)\). Suppose for contradiction that \(\vec{v}\in\ker(\mat{L}^\top)\). Then \cref{eq:eigenval} is 
+			\[
+				\mat{L}\underbrace{\mat{L}^\top \vec{v}}_{=0} = \lambda \vec{v} \implies \lambda = 0,	
+			\]
+			which is absurd since the eigenvalues of a positive definite matrix are non-zero. Thus, we have \(\vec{v}\not\in\ker(\mat{L}^\top)\), and so \(\lambda\) is always an eigenvalue of \(\mat{L}^\top\mat{L}\).
+		  \end{proof}
 
 	      % 2
 	\item In this question we will ask how to solve \(\mat{B}\vec{y} = \vec{c}\) given a fast way to solve \(\mat{A}\vec{x} = \vec{b}\), where \(\mat{A} - \mat{B}\) is "small" in some sense.
@@ -129,7 +189,12 @@
 	      \begin{enumerate}
 		      \item Calculate the appropriate determinants to show that \(\mat{A}\) can be written as \(\mat{A} = \mat{L}\mat{U}\) where \(\mat{L}\) is a unit lower triangular matrix and \(\mat{U}\) is a non-singular upper triangular matrix. You may use MATLAB to compute the determinants. But the remaining parts of this problem should be done by paper-and-pencil.
 		            \begin{answer}
-
+						\begin{align*}
+							\det\mat{A}_1 & = \mqty|1| = 1 \\
+							\det\mat{A}_2 & = \mqty|2 & 1 \\ 4 & 3| = 2 \\
+							\det\mat{A}_3 & = \mqty|2 & 1 & 1 \\ 4 & 3 & 3 \\ 8 & 7 & 9| = (2)(6)-(1)(12)+(1)(4) = 4 \\
+							\det\mat{A}_4 & = \mqty|2 & 1 & 1 & 0 \\ 4 & 3 & 3 & 1 \\ 8 & 7 & 9 & 5 \\ 6 & 7 & 9 & 8|
+						\end{align*}
 		            \end{answer}
 
 		      \item Compute the LU decomposition \(\mat{A} = \mat{L}\mat{U}\) and convert \(\mat{A}x = b\) into \(\mat{U}x = y\) where \(\mat{U}\) is upper triangular and solve for \(x\).
