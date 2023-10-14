@@ -24,6 +24,7 @@
 
 \pgfplotsset{compat=1.18}
 \usepgfplotslibrary{fillbetween}
+\usepgfplotslibrary{groupplots}
 
 % Clickable link configuration
 \hypersetup{
@@ -334,7 +335,31 @@
 	      \begin{enumerate}
 		      \item Compute the short (reduced) SVD of \(\mat{A}\) using Matlab. Then plot the normalized singular values under \texttt{subplot(2,1,2)}. This figure might be hard to read due to the scale of the \(y\)-axis. Then plot only the leading 700 normalized singular values under \texttt{subplot(2,1,2)}. What do you observe? What would be your decision for the (numerical) rank of \(\mat{A}\) based on these comments? Justify your reasoning. Does the result of the built-in rank command coincide with your decision?
 		            \begin{answer}
-
+						\begin{figure}
+							\centering\begin{tikzpicture}
+								\begin{groupplot}[
+									width = .9\textwidth,
+									height = .4\textwidth,
+									xmax = 800, 
+									group style = {group size = 1 by 2},
+									ymode = log
+									]
+									\nextgroupplot
+									\addplot table [
+										y expr = \thisrowno{0},
+										x expr = \coordindex +1
+									] {out/all_singular_values7.dat};
+									\addplot coordinates {(656, 1e-167)  (656, 1e-1)};
+									\nextgroupplot
+									\addplot table [
+										y expr = \thisrowno{0},
+										x expr = \coordindex +1,
+										restrict x to domain=1:700
+									] {out/all_singular_values7.dat};
+									\addplot coordinates {(656, 1e-18)  (656, 1e-1)};
+								\end{groupplot}
+							\end{tikzpicture}
+						\end{figure}
 		            \end{answer}
 
 		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for\( k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
