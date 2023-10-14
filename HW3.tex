@@ -1,15 +1,12 @@
 \documentclass{article}
 
 \usepackage[margin=.75in]{geometry}
-\usepackage{amsmath,amsthm,amsfonts,mathtools}
+\usepackage{amsthm,mathtools}
 \usepackage[USenglish]{babel}
 \usepackage{hyperref, xurl}     % Used for better URL formatting
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
 \usepackage{microtype} % Help text fit on the page more, rather than spilling into the margins
 \usepackage{fancyhdr}
 \usepackage[inline]{enumitem}
-\usepackage{bm}
 \usepackage{cleveref}
 
 \usepackage{physics}
@@ -17,10 +14,14 @@
 \usepackage{cancel}
 \usepackage{halloweenmath}
 \usepackage[newfloat]{minted}
-\usepackage{xcolor, mdframed, fontspec}
+\usepackage{xcolor, mdframed}
 \usepackage{caption}
 \usepackage{tasks}
 \usepackage[linesnumbered,ruled]{algorithm2e}
+\usepackage{unicode-math}
+
+\setmathfont{latinmodern-math.otf}
+\setmathfont{texgyrepagella-math.otf}[range=bb]
 
 \pgfplotsset{compat=1.18}
 \usepgfplotslibrary{fillbetween}
@@ -69,7 +70,7 @@
 \newcommand{\comp}  {\mathbb{C}}
 \newcommand{\reals} {\mathbb{R}}
 \newcommand{\ints}  {\mathbb{Z}}
-\newcommand{\mat}[1]{\bm{#1}}
+\newcommand{\mat}[1]{\symbfit{#1}}
 \newcommand{\fexp}[1]{\phantom{^{#1}}2^{#1}}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\cond}{cond}
