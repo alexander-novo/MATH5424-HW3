@@ -16,6 +16,7 @@
 \usepackage[newfloat]{minted}
 \usepackage{xcolor, mdframed}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{tasks}
 \usepackage[linesnumbered,ruled]{algorithm2e}
 \usepackage{unicode-math}
@@ -64,8 +65,8 @@
 \lhead{Math 5424 HW 3}
 
 \pagenumbering{arabic} % Change page numbering to lowercase roman for pre-pages
-
-\renewcommand{\qedsymbol}{$\xrightswishingghost{\phantom{text}}$}
+%\xrightswishingghost{\phantom{text}}
+\renewcommand{\qedsymbol}{$\bigpumpkin$}
 
 \newcommand{\comp}  {\mathbb{C}}
 \newcommand{\reals} {\mathbb{R}}
@@ -336,36 +337,64 @@
 	      \begin{enumerate}
 		      \item Compute the short (reduced) SVD of \(\mat{A}\) using Matlab. Then plot the normalized singular values under \texttt{subplot(2,1,2)}. This figure might be hard to read due to the scale of the \(y\)-axis. Then plot only the leading 700 normalized singular values under \texttt{subplot(2,1,2)}. What do you observe? What would be your decision for the (numerical) rank of \(\mat{A}\) based on these comments? Justify your reasoning. Does the result of the built-in rank command coincide with your decision?
 		            \begin{answer}
-						\begin{figure}
-							\centering\begin{tikzpicture}
-								\begin{groupplot}[
-									width = .9\textwidth,
-									height = .4\textwidth,
-									xmax = 800, 
-									group style = {group size = 1 by 2},
-									ymode = log
-									]
-									\nextgroupplot
-									\addplot table [
-										y expr = \thisrowno{0},
-										x expr = \coordindex +1
-									] {out/all_singular_values7.dat};
-									\addplot coordinates {(656, 1e-167)  (656, 1e-1)};
-									\nextgroupplot
-									\addplot table [
-										y expr = \thisrowno{0},
-										x expr = \coordindex +1,
-										restrict x to domain=1:700
-									] {out/all_singular_values7.dat};
-									\addplot coordinates {(656, 1e-18)  (656, 1e-1)};
-								\end{groupplot}
-							\end{tikzpicture}
-						\end{figure}
+						We notice a significant drop off in singular values after the \(654^\text{th}\) singular value. Because of this, the numerical rank of \(\mat{A}\) should be 654. Indeed, this is the computed rank of \(\mat{A}\).
+			            \begin{figure} %TODO:Alex, make vertical lines pretty on these please and thank you
+				            \centering\begin{tikzpicture}
+					            \begin{groupplot}[
+							            width = .9\textwidth,
+							            height = .4\textwidth,
+							            xmax = 800,
+							            group style = {group size = 1 by 2},
+							            ymode = log
+						            ]
+						            \nextgroupplot
+						            \addplot table [
+								            y expr = \thisrowno{0},
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values7.dat};
+						            \addplot coordinates {(655, 1e-167)  (655, 1e-1)};
+						            \nextgroupplot
+						            \addplot table [
+								            y expr = \thisrowno{0},
+								            x expr = \coordindex +1,
+								            restrict x to domain=1:700
+							            ] {out/all_singular_values7.dat};
+						            \addplot coordinates {(655, 1e-18)  (655, 1e-1)};
+					            \end{groupplot}
+				            \end{tikzpicture}
+				            \caption{Plots showing all singular values of \(\mat{A}\) and just the first 700 singular values of \(\mat{A}\). Note the large gap between values that occurs at the calculated rank of \(\mat{A}\) (654).}\label{fig:singvals}
+			            \end{figure} 
 		            \end{answer}
 
 		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for\( k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
-		            \begin{answer}
-
+		            \begin{answer}\hfill
+			            \begin{figure}
+				            \centering
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Original matrix as image check.png}
+					            \caption{Original Image}\label{fig:ogThumb}
+				            \end{subfigure}\qquad
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Rank_1_Approximation.png}
+					            \caption{\(k=1\)}\label{fig:Thumb1}
+				            \end{subfigure}\\
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Rank_10_Approximation.png}
+					            \caption{\(k=10\)}\label{fig:Thumb10}
+				            \end{subfigure}\qquad
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Rank_50_Approximation.png}
+					            \caption{\(k=50\)}\label{fig:Thumb50}
+				            \end{subfigure}
+				            \caption{Original fingerprint image compared to its optimal rank-\(k \) approximations.}\label{fig:Thums}
+			            \end{figure}
+						\begin{mdframed}[backgroundcolor=lightgray]
+							\rustcode[fontsize=\footnotesize]{src/main.rs}
+						\end{mdframed}
 		            \end{answer}
 	      \end{enumerate}
 
