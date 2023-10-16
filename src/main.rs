@@ -1,6 +1,9 @@
 #![feature(float_next_up_down)]
 use image::{DynamicImage::ImageLuma8, GrayImage};
-use nalgebra::{DMatrix, Dyn, Matrix, VecStorage, SVD};
+use nalgebra::{
+    allocator::Allocator, ComplexField, DMatrix, DefaultAllocator, Dim, DimMin, DimMinimum, Matrix,
+    RawStorage, VecStorage, SVD,
+};
 use show_image::create_window;
 use std::{
     fs::{self, File},
@@ -21,7 +24,7 @@ fn main() {
     let a = DMatrix::from_row_iterator(
         img.height() as usize,
         img.width() as usize,
-        img.as_raw().iter().map(|x| return *x as f64),
+        img.as_raw().iter().map(|x| *x as f64),
     );
 
     // check matrix is still the same image
@@ -66,12 +69,18 @@ fn main() {
     // keep images up until original window is closed
     for _event in window.event_channel().unwrap() {}
 }
-// TODO:make generic
+
 /// Calculates the optimal rank `k` approximation of a matrix represented by its singular value decomosition.
-fn rank_k_approx(
-    svd: &SVD<f64, Dyn, Dyn>,
+fn rank_k_approx<T: ComplexField, R: DimMin<C>, C: Dim>(
+    svd: &SVD<T, R, C>,
     k: usize,
-) -> Matrix<f64, Dyn, Dyn, VecStorage<f64, Dyn, Dyn>> {
+) -> Matrix<T, R, C, <nalgebra::DefaultAllocator as nalgebra::allocator::Allocator<T, R, C>>::Buffer>
+where
+    DefaultAllocator: Allocator<T, DimMinimum<R, C>, C>
+        + Allocator<T, R, DimMinimum<R, C>>
+        + Allocator<T::RealField, DimMinimum<R, C>>
+        + Allocator<T, R, C>,
+{
     let mut u = svd.u.as_ref().unwrap().clone();
     // Multiply $\(u_i\sigma_i\)$ for $\(i\in[1,k]\)$
     for i in 0..k {
@@ -83,14 +92,16 @@ fn rank_k_approx(
 }
 
 /// Displays and saves the image stored in mat to the file "./out/<`wind_name`>.png"
-fn mat_to_img_show(
-    mat: &Matrix<f64, Dyn, Dyn, VecStorage<f64, Dyn, Dyn>>,
+fn mat_to_img_show<R: Dim, C: Dim>(
+    mat: &Matrix<f64, R, C, VecStorage<f64, R, C>>,
     wind_name: impl AsRef<str>,
-) {
+) where
+    VecStorage<f64, R, C>: RawStorage<f64, R, C>,
+{
     // Convert matrix to 8-bit monochrome image
     // Annoyingly, image crate and matrix crate use different size types, so converting is required
     let im2 = GrayImage::from_fn(mat.ncols() as u32, mat.nrows() as u32, |c, r| {
-        return image::Luma([mat[(r as usize, c as usize)] as u8]);
+        image::Luma([mat[(r as usize, c as usize)] as u8])
     });
 
     // Create window and display image
