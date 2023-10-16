@@ -323,7 +323,17 @@
 	      \end{equation}
 	      Show that has \(\tilde{\mat{A}}_k\) in \eqref{eq:a-tilde} has rank-\(k\) and minimizes the error, i.e, \(\|\mat{A} - \tilde{\mat{A}}_k\| = \sigma_{k+1}\).
 	      \begin{proof}
-
+		      Observe that \(\sum_{j = 1}^k(\sigma_j - \eta_j)\vec{u}_j\vec{v}_j^\top\) is the SVD of \(\tilde{\mat{A}}_k\), with singular values of \((\sigma_j - \eta_j)\). Since \(|\eta_j| < \sigma_{k + 1} \leq \sigma_j\) for all \(1 \leq j \leq k\), then \(\sigma_j - \eta_j > 0\), and \(\tilde{\mat{A}}_k\) has \(k\) non-zero singular values, so it has rank \(k\). As well, we have
+		      \begin{align*}
+			      \mat{A} - \tilde{\mat{A}}_k & = \sum_{j = 1}^r \sigma_j \vec{u}_j\vec{v}_j^\top - \sum_{j = 1}^k(\sigma_j - \eta_j)\vec{u}_j\vec{v}_j^\top                                             \\
+			                                  & = \sum_{j = 1}^k \qty[\sigma_j \vec{u}_j\vec{v}_j^\top - (\sigma_j - \eta_j)\vec{u}_j\vec{v}_j^\top] + \sum_{j = k+1}^r \sigma_j \vec{u}_j\vec{v}_j^\top \\
+			                                  & = \sum_{j = 1}^k \eta_j\vec{u}_j\vec{v}_j^\top + \sum_{j = k+1}^r \sigma_j \vec{u}_j\vec{v}_j^\top.
+		      \end{align*}
+		      Note, then, that this is the SVD of \(\mat{A} - \tilde{\mat{A}}_k\), with eigenvalues of \(|\eta_j|\) for \(1 \leq j \leq k\) and \(\sigma_j\) for \(k+1 \leq j \leq r\). Since \(|\eta_j| < \sigma_{k+1}\) for all \(j\) and \(\sigma_{k+1} \geq \sigma_{k}\) for all \(j\), we must have
+		      \[
+			      \|\mat{A} - \tilde{\mat{A}}_k\|_2 = \sigma_{k+1},
+		      \]
+		      as required.
 	      \end{proof}
 
 	      % 7
@@ -338,7 +348,7 @@
 
 		            \end{answer}
 
-		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for\( k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
+		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for \(k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
 		            \begin{answer}
 
 		            \end{answer}
