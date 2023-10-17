@@ -27,6 +27,9 @@ fn main() {
         img.as_raw().iter().map(|x| *x as f64),
     );
 
+    // Save size of $\(\mat{A}\)$ for later
+    let (m, n) = a.shape();
+
     // check matrix is still the same image
     mat_to_img_show(&a, "Original matrix as image check");
 
@@ -44,13 +47,11 @@ fn main() {
     // notify Terminal of completed SVD printing
     eprintln!("finished printing");
 
-    // save u and v_t unwrapped for later
-    let Some(u) = &svd.u else { unreachable!() };
-    let Some(vt) = &svd.v_t else { unreachable!() };
-
+    // The rank() function in matlab uses a default tolerance value. The nalgebra version doesn't - it needs to be provided. So we replicate matlab's default tolerance.
     // tol from MatLab = max(size(A))*eps(norm(A))
-    let tol = (u.nrows().max(vt.ncols()) as f64)
-        * (f64::next_up(svd.singular_values[0]) - svd.singular_values[0]);
+    // From matlab's documentation, eps(x) is the positive distance between |x| and the next largest float.
+    // Rust's f64::next_up(x) returns that next largest float. As well, we are using the already computed largest singular value as norm(A).
+    let tol = (m.max(n) as f64) * (f64::next_up(svd.singular_values[0]) - svd.singular_values[0]);
 
     // Compute the Rank of $\(\mat{A}\)$ with the computed tolerance
     println!("Computed Rank of A = {}", svd.rank(tol));
@@ -82,7 +83,7 @@ where
         + Allocator<T, R, C>,
 {
     let mut u = svd.u.as_ref().unwrap().clone();
-    // Multiply $\(u_i\sigma_i\)$ for $\(i\in[1,k]\)$
+    // Multiply $\(\sigma_iu_i\)$ for $\(i\in[1,k]\)$
     for i in 0..k {
         let val = svd.singular_values[i].clone();
         u.column_mut(i).scale_mut(val);
@@ -98,10 +99,13 @@ fn mat_to_img_show<R: Dim, C: Dim>(
 ) where
     VecStorage<f64, R, C>: RawStorage<f64, R, C>,
 {
+    let min = mat.min();
+    let max = mat.max();
     // Convert matrix to 8-bit monochrome image
     // Annoyingly, image crate and matrix crate use different size types, so converting is required
+    // Matlab's imshow() command maps the range [min(A), max(A)] -> [0, 255] when plotting. So we do that here, too
     let im2 = GrayImage::from_fn(mat.ncols() as u32, mat.nrows() as u32, |c, r| {
-        image::Luma([mat[(r as usize, c as usize)] as u8])
+        image::Luma([((mat[(r as usize, c as usize)] - min) / max * 255.0).round() as u8])
     });
 
     // Create window and display image

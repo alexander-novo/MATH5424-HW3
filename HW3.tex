@@ -20,6 +20,7 @@
 \usepackage{tasks}
 \usepackage[linesnumbered,ruled]{algorithm2e}
 \usepackage{unicode-math}
+\usepackage{float}
 
 \setmathfont{latinmodern-math.otf}
 \setmathfont{texgyrepagella-math.otf}[range=bb]
@@ -347,8 +348,8 @@
 	      \begin{enumerate}
 		      \item Compute the short (reduced) SVD of \(\mat{A}\) using Matlab. Then plot the normalized singular values under \texttt{subplot(2,1,2)}. This figure might be hard to read due to the scale of the \(y\)-axis. Then plot only the leading 700 normalized singular values under \texttt{subplot(2,1,2)}. What do you observe? What would be your decision for the (numerical) rank of \(\mat{A}\) based on these comments? Justify your reasoning. Does the result of the built-in rank command coincide with your decision?
 		            \begin{answer}
-			            We notice a significant drop off in singular values after the \(654^\text{th}\) singular value. Because of this, the numerical rank of \(\mat{A}\) should be 654. Indeed, this is the computed rank of \(\mat{A}\).
-			            \begin{figure}
+			            Plots of the singular values of \(\mat{A}\) can be found in \cref{fig:singvals}. We notice a significant drop off in singular values after the \(654^\text{th}\) singular value. Because of this, the numerical rank of \(\mat{A}\) should be 654. Indeed, this is the computed rank of \(\mat{A}\).
+			            \begin{figure}[H]
 				            \centering\begin{tikzpicture}
 					            \begin{groupplot}[
 							            width = .9\textwidth,
@@ -357,6 +358,8 @@
 							            group style = {group size = 1 by 2},
 							            ymode = log,
 							            extra x ticks = {654},
+							            restrict y to domain=-167:,
+							            log basis y=10,
 						            ]
 						            \nextgroupplot[ymin={1e-167},ymax=1e13]
 						            \addplot table [
@@ -379,7 +382,7 @@
 
 		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for \(k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
 		            \begin{answer}\hfill
-			            \begin{figure}
+			            \begin{figure}[H]
 				            \centering
 				            \begin{subfigure}{0.225\textwidth}
 					            \centering
