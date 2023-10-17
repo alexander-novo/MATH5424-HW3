@@ -2,8 +2,9 @@
 use image::{DynamicImage::ImageLuma8, GrayImage};
 use nalgebra::{
     allocator::Allocator, ComplexField, DMatrix, DefaultAllocator, Dim, DimMin, DimMinimum, Matrix,
-    RawStorage, VecStorage, SVD,
+    RawStorage, SVD,
 };
+use num_traits::AsPrimitive;
 use show_image::create_window;
 use std::{
     fs::{self, File},
@@ -93,19 +94,14 @@ where
 }
 
 /// Displays and saves the image stored in mat to the file "./out/<`wind_name`>.png"
-fn mat_to_img_show<R: Dim, C: Dim>(
-    mat: &Matrix<f64, R, C, VecStorage<f64, R, C>>,
+fn mat_to_img_show<T: AsPrimitive<u8>, R: Dim, C: Dim, S: RawStorage<T, R, C>>(
+    mat: &Matrix<T, R, C, S>,
     wind_name: impl AsRef<str>,
-) where
-    VecStorage<f64, R, C>: RawStorage<f64, R, C>,
-{
-    let min = mat.min();
-    let max = mat.max();
+) {
     // Convert matrix to 8-bit monochrome image
     // Annoyingly, image crate and matrix crate use different size types, so converting is required
-    // Matlab's imshow() command maps the range [min(A), max(A)] -> [0, 255] when plotting. So we do that here, too
     let im2 = GrayImage::from_fn(mat.ncols() as u32, mat.nrows() as u32, |c, r| {
-        image::Luma([((mat[(r as usize, c as usize)] - min) / max * 255.0).round() as u8])
+        image::Luma([mat[(r as usize, c as usize)].as_()])
     });
 
     // Create window and display image
