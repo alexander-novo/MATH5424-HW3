@@ -1,4 +1,8 @@
 #![feature(float_next_up_down)]
+use std::{
+    fs::{self, File},
+    io::Write,
+};
 use image::{DynamicImage::ImageRgb8, ImageBuffer, Rgb, RgbImage};
 use nalgebra::{
     allocator::Allocator, ComplexField, DMatrix, DefaultAllocator, Dim, DimMin, DimMinimum, Matrix,
@@ -31,20 +35,20 @@ fn main() {
     // Compute SVD of $\(\mat{A}\)$
     let svd1 = SVD::new(a1, true, true);
     eprintln!("svd1 computed");
-    // let svd2 = SVD::new(A2.clone(), true, true);
-    // eprintln!("svd2 computed");
-    // let svd3 = SVD::new(A3.clone(), true, true);
-    // eprintln!("svd3 computed");
+    let svd2 = SVD::new(a2.clone(), true, true);
+    eprintln!("svd2 computed");
+    let svd3 = SVD::new(a3.clone(), true, true);
+    eprintln!("svd3 computed");
 
     // Create output file
-    // fs::create_dir_all("./out").unwrap();
-    // let mut out = File::create("./out/all_singular_values8.dat").unwrap();
-    // // Print normalized singular values to output file
-    // writeln!(out, "#A1 \t A2 \t A3").unwrap();
-    // // s1 is singular values of A1, s2 is singular values of A2, s3 is singular values of A3
-    // for ((s1,s2),s3) in svd1.singular_values.iter().zip(&svd2.singular_values).zip(&svd3.singular_values) {
-    //     writeln!(out, " {:8.6} {:8.6} {:8.6}", s1 / svd1.singular_values[0], s2 / svd2.singular_values[0], s3 / svd3.singular_values[0]).unwrap();
-    // }
+    fs::create_dir_all("./out").unwrap();
+    let mut out = File::create("./out/all_singular_values8.dat").unwrap();
+    // Print normalized singular values to output file
+    writeln!(out, "#A1 \t A2 \t A3").unwrap();
+    // s1 is singular values of A1, s2 is singular values of A2, s3 is singular values of A3
+    for ((s1,s2),s3) in svd1.singular_values.iter().zip(&svd2.singular_values).zip(&svd3.singular_values) {
+        writeln!(out, " {:8.6} {:8.6} {:8.6}", s1 / svd1.singular_values[0], s2 / svd2.singular_values[0], s3 / svd3.singular_values[0]).unwrap();
+    }
     // notify Terminal of completed SVD printing
     eprintln!("finished printing");
 

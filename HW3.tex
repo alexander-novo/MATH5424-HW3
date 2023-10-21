@@ -307,17 +307,18 @@
 	      \]
 	      \begin{proof}
 		      For \(\vec{y},\vec{x}\neq 0\) we have
-		      \begin{equation}
-			      \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} = \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \qty(\frac{\vec{y}}{\norm{\vec{y}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \label{eq:Golubsetup}
-		      \end{equation}
-		      which is the inner product, or the projection of a unit vector \(\frac{\vec{y}}{\norm{\vec{y}}_2}\) onto \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). The maximum of this quantity is achieved when \(\frac{\vec{y}}{\norm{\vec{y}}_2}\) is the unit vector in the direction of \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). In other words,
+		      \begin{align}
+			      \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} &= \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \qty(\frac{\vec{y}}{\norm{\vec{y}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \nonumber \\
+				  &= \max_{\substack{\vec{y}\in\reals^n \\\norm{\vec{y}}=1, \\ \vec{x} \in \reals^n}} \vec{y}^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \label{eq:Golubsetup}
+		      \end{align}
+		      which is the inner product, or the projection of a unit vector \(\vec{y}\) onto \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). The maximum of this quantity is achieved when \(\vec{y}\) is the unit vector in the direction of \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). In other words,
 		      \begin{align*}
-			      \frac{\vec{y}}{\norm{\vec{y}}_2} & = \frac{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}}_2}{\norm{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}}_2} \\
+			      \vec{y} & = \frac{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}}_2}{\norm{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}}_2} \\
 			                                       & = \frac{\mat{A}\vec{x}}{\norm{\mat{A}\vec{x}}_2}.
 		      \end{align*}
 		      Then in \cref{eq:Golubsetup} we have
 		      \begin{align*}
-			      \max_{\substack{\vec{y} \in \reals^m,\\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} &= \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \qty(\frac{\vec{y}}{\norm{\vec{y}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}  \\
+			      \max_{\substack{\vec{y} \in \reals^m,\\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} &= \max_{\substack{\vec{y}\in\reals^n \\\norm{\vec{y}}=1, \\ \vec{x} \in \reals^n}} \vec{y}^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}  \\
 			       & = \max_{\vec{x} \in \reals^n} \qty( \frac{\mat{A}\vec{x}}{\norm{\mat{A}\vec{x}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \\
 			       & = \max_{\vec{x} \in \reals^n} \frac{\norm{\mat{A}\vec{x}}_2^2}{\norm{\mat{A}\vec{x}}_2\norm{\vec{x}}_2}                            \\
 			       & = \max_{\vec{x} \in \reals^n} \frac{\norm{\mat{A}\vec{x}}_2}{\norm{\vec{x}}_2}                                                     \\
@@ -443,7 +444,43 @@
 	      \begin{enumerate}
 		      \item Compute the SVDs of every layer A1, A2, and A3. Then compute the vector of normalized singular values for every layer. Using the subplot comment (and logarithmic y-axis), plot all three vectors in Figure 2.
 		            \begin{answer}
-
+						\begin{figure}[H]
+				            \centering\begin{tikzpicture}
+					            \begin{groupplot}[
+							            width = .9\textwidth,
+							            height = .3\textwidth,
+										xmin = -1,
+							            xmax = 530,
+							            group style = {group size = 1 by 3},
+							            ymode = log,
+							            extra x ticks = {420},
+							            % restrict y to domain=-167:,
+							            log basis y=10,
+							            ylabel=\(\sigma_i\),
+							            xlabel=\(i\)
+						            ]
+						            \nextgroupplot[] % ymin={1e-167},ymax=1e13
+						            \addplot table [
+								            y expr = A1,
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values8.dat};
+						            % \addplot[dashed] coordinates {(420, 1e-167)  (420, 1e13)};
+						            \nextgroupplot[] % ymin={1e-18},ymax=1e2
+						            \addplot table [
+								            y expr = A2,
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values8.dat};
+						            % \addplot[dashed] coordinates {(420, 1e-18)  (420, 1e2)};
+									\nextgroupplot[] % ymin={1e-18},ymax=1e2
+						            \addplot table [
+								            y expr = A3,
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values8.dat};
+						            % \addplot[dashed] coordinates {(420, 1e-18)  (420, 1e2)};
+					            \end{groupplot}
+				            \end{tikzpicture}
+				            \caption{Plots showing all singular values of \(\mat{A}\) and just the first 700 singular values of \(\mat{A}\). Note the large gap between values that occurs at the calculated rank of \(\mat{A}\) (654).}\label{fig:singvals}
+			            \end{figure}
 		            \end{answer}
 
 		      \item \underline{Use the same error tolerance for every layer}: Find the smallest rank-k for each layer such that the relative error in each layer is less than
