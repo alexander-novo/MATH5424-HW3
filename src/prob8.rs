@@ -1,4 +1,6 @@
 #![feature(float_next_up_down)]
+use std::ops::MulAssign;
+
 use image::{DynamicImage::ImageRgb8, ImageBuffer, Rgb, RgbImage};
 use nalgebra::{
     allocator::Allocator, ComplexField, DMatrix, DefaultAllocator, Dim, DimMin, DimMinimum, Matrix,
@@ -78,29 +80,30 @@ fn rgb_to_mat(img: &ImageBuffer<Rgb<u8>, Vec<u8>>, c: usize) -> DMatrix<f64> {
     )
 }
 
-/// Compute optimal approximation with relative error less than err
-/// Calls `rank_k_approx` after computing required k for error
-fn rel_err_approx<R: DimMin<C>, C: Dim>(
-    svd: &SVD<f64, R, C>,
-    mut err: f64,
-    prev: &Matrix<f64, R, C, impl Storage<f64, R, C>>,
+/// Compute optimal approximation with relative error less than err.
+/// Calls `rank_k_approx` after computing required k for error, then returns that rank and the approximation.
+fn rel_err_approx<T: ComplexField, R: DimMin<C>, C: Dim>(
+    svd: &SVD<T, R, C>,
+    mut err: T::RealField,
+    prev: &Matrix<T, R, C, impl Storage<T, R, C>>,
     prev_k: usize,
 ) -> (
     usize,
     Matrix<
-        f64,
+        T,
         R,
         C,
-        <nalgebra::DefaultAllocator as nalgebra::allocator::Allocator<f64, R, C>>::Buffer,
+        <nalgebra::DefaultAllocator as nalgebra::allocator::Allocator<T, R, C>>::Buffer,
     >,
 )
 where
-    DefaultAllocator: Allocator<f64, DimMinimum<R, C>, C>
-        + Allocator<f64, R, DimMinimum<R, C>>
-        + Allocator<f64, DimMinimum<R, C>>
-        + Allocator<f64, R, C>,
+    DefaultAllocator: Allocator<T, DimMinimum<R, C>, C>
+        + Allocator<T, R, DimMinimum<R, C>>
+        + Allocator<T::RealField, DimMinimum<R, C>>
+        + Allocator<T, R, C>,
+    T::RealField: for<'a> MulAssign<&'a T::RealField>,
 {
-    err *= svd.singular_values[0];
+    err *= &svd.singular_values[0];
 
     let k = match svd
         .singular_values
