@@ -360,6 +360,8 @@
 							            extra x ticks = {654},
 							            restrict y to domain=-167:,
 							            log basis y=10,
+										ylabel=\(\sigma_i\),
+										xlabel=\(i\)
 						            ]
 						            \nextgroupplot[ymin={1e-167},ymax=1e13]
 						            \addplot table [
@@ -381,7 +383,10 @@
 		            \end{answer}
 
 		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for \(k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
-		            \begin{answer}\hfill
+		            \begin{answer} The plots of the rank-\(k\) approximations, for \(k=1,10,50\), can be found in \cref{fig:Thums}, with program output displayed below: 
+						\begin{mdframed}[backgroundcolor=lightgray] 
+				            \inputminted{text}{out/output.txt}
+			            \end{mdframed}
 			            \begin{figure}[H]
 				            \centering
 				            \begin{subfigure}{0.225\textwidth}
@@ -406,9 +411,11 @@
 				            \end{subfigure}
 				            \caption{Original fingerprint image compared to its optimal rank-\(k \) approximations.}\label{fig:Thums}
 			            \end{figure}
-			            \begin{mdframed}[backgroundcolor=lightgray]
-				            \rustcode[fontsize=\footnotesize]{src/main.rs}
+						The code is given below:
+			            \begin{mdframed}[backgroundcolor=lightgray] 
+				            \rustcode[fontsize=\footnotesize]{src/prob7.rs}
 			            \end{mdframed}
+						
 		            \end{answer}
 	      \end{enumerate}
 
