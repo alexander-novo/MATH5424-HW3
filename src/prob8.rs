@@ -1,9 +1,10 @@
 #![feature(float_next_up_down)]
+use std::error::Error;
+use std::ops::MulAssign;
 use std::{
     fs::{self, File},
     io::Write,
 };
-use std::ops::MulAssign;
 
 use image::{DynamicImage::ImageRgb8, ImageBuffer, Rgb, RgbImage};
 use nalgebra::{
@@ -14,12 +15,12 @@ use num_traits::AsPrimitive;
 use show_image::create_window;
 
 #[show_image::main]
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     // Open original .pbm image
-    let img = image::open("hokiebirdwithacat.jpg").unwrap();
+    let img = image::open("hokiebirdwithacat.jpg")?;
     // Display image
-    let window = create_window("Original Image", Default::default()).unwrap();
-    window.set_image("Figure 1", img.clone()).unwrap();
+    let window = create_window("Original Image", Default::default())?;
+    window.set_image("Figure 1", img.clone())?;
 
     // Assert image is 8-bit Rgb
     let ImageRgb8(img) = img else { unreachable!() };
@@ -32,7 +33,7 @@ fn main() {
     let (m, n) = a1.shape();
 
     // check matrix is still the same image
-    mat_to_img_show(&a1, &a2, &a3, "Original matrix as image check");
+    mat_to_img_show(&a1, &a2, &a3, "Original matrix as image check")?;
 
     // Compute SVD of $\(\mat{A}\)$
     let svd1 = SVD::new(a1, true, true);
@@ -43,13 +44,24 @@ fn main() {
     eprintln!("svd3 computed");
 
     // Create output file
-    fs::create_dir_all("./out").unwrap();
-    let mut out = File::create("./out/all_singular_values8.dat").unwrap();
+    fs::create_dir_all("./out")?;
+    let mut out = File::create("./out/all_singular_values8.dat")?;
     // Print normalized singular values to output file
-    writeln!(out, "#A1 \t A2 \t A3").unwrap();
+    writeln!(out, "{:8} {:8} {:8}", "A1", "A2", "A3")?;
     // s1 is singular values of A1, s2 is singular values of A2, s3 is singular values of A3
-    for ((s1,s2),s3) in svd1.singular_values.iter().zip(&svd2.singular_values).zip(&svd3.singular_values) {
-        writeln!(out, " {:8.6} {:8.6} {:8.6}", s1 / svd1.singular_values[0], s2 / svd2.singular_values[0], s3 / svd3.singular_values[0]).unwrap();
+    for ((s1, s2), s3) in svd1
+        .singular_values
+        .iter()
+        .zip(&svd2.singular_values)
+        .zip(&svd3.singular_values)
+    {
+        writeln!(
+            out,
+            "{:8.6} {:8.6} {:8.6}",
+            s1 / svd1.singular_values[0],
+            s2 / svd2.singular_values[0],
+            s3 / svd3.singular_values[0]
+        )?;
     }
     // notify Terminal of completed SVD printing
     eprintln!("finished printing");
@@ -59,7 +71,7 @@ fn main() {
     let mut prev_k = 0;
     for err in [0.10, 0.05, 0.01] {
         (prev_k, approx) = rel_err_approx(&svd1, err, &approx, prev_k);
-        mat_to_img_show(&approx, &a2, &a3, format!("Rank_{prev_k}_Approximation"));
+        mat_to_img_show(&approx, &a2, &a3, format!("Rank_{prev_k}_Approximation"))?;
         // Print relative errors
         println!(
             "Relative error for A_{} = {}\nRelative error for A_{} = {}",
@@ -72,7 +84,9 @@ fn main() {
     }
 
     // keep images up until original window is closed
-    for _event in window.event_channel().unwrap() {}
+    for _event in window.event_channel()? {}
+
+    Ok(())
 }
 
 /// Converts image buffer reference to matrix of f64 for given channel `c`
@@ -151,7 +165,7 @@ fn mat_to_img_show<T: AsPrimitive<u8>, R: Dim, C: Dim, S: RawStorage<T, R, C>>(
     mat_g: &Matrix<T, R, C, S>,
     mat_b: &Matrix<T, R, C, S>,
     wind_name: impl AsRef<str>,
-) {
+) -> Result<(), Box<dyn Error>> {
     // Convert matrix to 8-bit rgb image
     // Annoyingly, image crate and matrix crate use different size types, so converting is required
     let im2 = RgbImage::from_fn(mat_r.ncols() as u32, mat_r.nrows() as u32, |c, r| {
@@ -160,13 +174,14 @@ fn mat_to_img_show<T: AsPrimitive<u8>, R: Dim, C: Dim, S: RawStorage<T, R, C>>(
     });
 
     // Create window and display image
-    let window2 = create_window(wind_name.as_ref(), Default::default()).unwrap();
-    window2.set_image("f", im2.clone()).unwrap();
+    let window2 = create_window(wind_name.as_ref(), Default::default())?;
+    window2.set_image("f", im2.clone())?;
 
     // Save image as png in output folder
     im2.save_with_format(
         format!("./out/{}.png", wind_name.as_ref()),
         image::ImageFormat::Png,
-    )
-    .unwrap();
+    )?;
+
+    Ok(())
 }

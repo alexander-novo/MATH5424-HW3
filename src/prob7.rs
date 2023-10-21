@@ -7,17 +7,18 @@ use nalgebra::{
 use num_traits::AsPrimitive;
 use show_image::create_window;
 use std::{
+    error::Error,
     fs::{self, File},
     io::Write,
 };
 
 #[show_image::main]
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     // Open original .pbm image
-    let img = image::open("HW4_Prob6_fingerprint.pbm").unwrap();
+    let img = image::open("HW4_Prob6_fingerprint.pbm")?;
     // Display image
-    let window = create_window("Original Image", Default::default()).unwrap();
-    window.set_image("Figure 1", img.clone()).unwrap();
+    let window = create_window("Original Image", Default::default())?;
+    window.set_image("Figure 1", img.clone())?;
 
     // Assert image is 8-bit monochrome
     let ImageLuma8(img) = img else { unreachable!() };
@@ -32,18 +33,18 @@ fn main() {
     let (m, n) = a.shape();
 
     // check matrix is still the same image
-    mat_to_img_show(&a, "Original matrix as image check");
+    mat_to_img_show(&a, "Original matrix as image check")?;
 
     // Compute SVD of $\(\mat{A}\)$
     let svd = SVD::new(a, true, true);
 
     // Create output file
-    fs::create_dir_all("./out").unwrap();
-    let mut out = File::create("./out/all_singular_values7.dat").unwrap();
+    fs::create_dir_all("./out")?;
+    let mut out = File::create("./out/all_singular_values7.dat")?;
     // Print normalized singular values to output file
-    writeln!(out, "#all singular values of A").unwrap();
+    writeln!(out, "#all singular values of A")?;
     for s in &svd.singular_values {
-        writeln!(out, "{}", s / svd.singular_values[0]).unwrap();
+        writeln!(out, "{}", s / svd.singular_values[0])?;
     }
     // notify Terminal of completed SVD printing
     eprintln!("finished printing");
@@ -63,7 +64,7 @@ fn main() {
     for k in [1, 10, 50] {
         approx = rank_k_approx(&svd, k, &approx, prev_k);
         prev_k = k;
-        mat_to_img_show(&approx, format!("Rank_{k}_Approximation"));
+        mat_to_img_show(&approx, format!("Rank_{k}_Approximation"))?;
         // Print relative errors
         println!(
             "Relative error for A_{k} = {}",
@@ -73,7 +74,8 @@ fn main() {
     }
 
     // keep images up until original window is closed
-    for _event in window.event_channel().unwrap() {}
+    for _event in window.event_channel()? {}
+    Ok(())
 }
 
 /// Calculates the optimal rank `k` approximation of a matrix represented by its singular value decomosition.
@@ -105,7 +107,7 @@ where
 fn mat_to_img_show<T: AsPrimitive<u8>, R: Dim, C: Dim, S: RawStorage<T, R, C>>(
     mat: &Matrix<T, R, C, S>,
     wind_name: impl AsRef<str>,
-) {
+) -> Result<(), Box<dyn Error>> {
     // Convert matrix to 8-bit monochrome image
     // Annoyingly, image crate and matrix crate use different size types, so converting is required
     let im2 = GrayImage::from_fn(mat.ncols() as u32, mat.nrows() as u32, |c, r| {
@@ -113,13 +115,14 @@ fn mat_to_img_show<T: AsPrimitive<u8>, R: Dim, C: Dim, S: RawStorage<T, R, C>>(
     });
 
     // Create window and display image
-    let window2 = create_window(wind_name.as_ref(), Default::default()).unwrap();
-    window2.set_image("f", im2.clone()).unwrap();
+    let window2 = create_window(wind_name.as_ref(), Default::default())?;
+    window2.set_image("f", im2.clone())?;
 
     // Save image as png in output folder
     im2.save_with_format(
         format!("./out/{}.png", wind_name.as_ref()),
         image::ImageFormat::Png,
-    )
-    .unwrap();
+    )?;
+
+    Ok(())
 }
