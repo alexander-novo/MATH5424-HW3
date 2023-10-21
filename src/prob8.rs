@@ -33,7 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let (m, n) = a1.shape();
 
     // check matrix is still the same image
-    mat_to_img_show(&a1, &a2, &a3, "Original matrix as image check")?;
+    mat_to_img_show(&a1, &a2, &a3, "RGB Image Conversion Check")?;
 
     // Compute SVD of $\(\mat{A}\)$
     let svd1 = SVD::new(a1, true, true);
