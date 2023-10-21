@@ -1,15 +1,11 @@
 #![feature(float_next_up_down)]
-use image::{DynamicImage::ImageRgb8, GrayImage, ImageBuffer, Rgb, RgbImage};
+use image::{DynamicImage::ImageRgb8, ImageBuffer, Rgb, RgbImage};
 use nalgebra::{
     allocator::Allocator, ComplexField, DMatrix, DefaultAllocator, Dim, DimMin, DimMinimum, Matrix,
     RawStorage, Storage, SVD,
 };
 use num_traits::AsPrimitive;
 use show_image::create_window;
-use std::{
-    fs::{self, File},
-    io::Write,
-};
 
 #[show_image::main]
 fn main() {
@@ -22,18 +18,18 @@ fn main() {
     // Assert image is 8-bit Rgb
     let ImageRgb8(img) = img else { unreachable!() };
     // Convert image to 3 matrices of doubles
-    let A1 = rgb_to_mat(&img, 0);
-    let A2 = rgb_to_mat(&img, 1);
-    let A3 = rgb_to_mat(&img, 2);
+    let a1 = rgb_to_mat(&img, 0);
+    let a2 = rgb_to_mat(&img, 1);
+    let a3 = rgb_to_mat(&img, 2);
 
     // Save size of $\(\mat{A}\)$ for later
-    let (m, n) = A1.shape();
+    let (m, n) = a1.shape();
 
     // check matrix is still the same image
-    mat_to_img_show(&A1, &A2, &A3, "Original matrix as image check");
+    mat_to_img_show(&a1, &a2, &a3, "Original matrix as image check");
 
     // Compute SVD of $\(\mat{A}\)$
-    let svd1 = SVD::new(A1, true, true);
+    let svd1 = SVD::new(a1, true, true);
     eprintln!("svd1 computed");
     // let svd2 = SVD::new(A2.clone(), true, true);
     // eprintln!("svd2 computed");
@@ -57,12 +53,12 @@ fn main() {
     let mut prev_k = 0;
     for err in [0.10, 0.05, 0.01] {
         (prev_k, approx) = rel_err_approx(&svd1, err, &approx, prev_k);
-        mat_to_img_show(&approx, &A2, &A3, format!("Rank_{prev_k}_Approximation"));
+        mat_to_img_show(&approx, &a2, &a3, format!("Rank_{prev_k}_Approximation"));
         // Print relative errors
         println!(
             "Relative error for A_{} = {}\nRelative error for A_{} = {}",
             // Rust is 0 indexed, need to subtract 1
-            prev_k-1,
+            prev_k - 1,
             svd1.singular_values[(prev_k) - 1] / svd1.singular_values[1 - 1],
             prev_k,
             svd1.singular_values[(prev_k + 1) - 1] / svd1.singular_values[1 - 1],
@@ -105,23 +101,14 @@ where
         + Allocator<f64, R, C>,
 {
     err *= svd.singular_values[0];
-    let mut i = 0;
-    // find k for given error
-    let k = loop {
-        if err >= svd.singular_values[i] {
-            break i;
-        }
-        i += 1;
-    };
 
-    // let k = match svd
-    //     .singular_values
-    //     .as_slice()
-    //     .binary_search_by(|x| x.partial_cmp(&err).unwrap())
-    // {
-    //     Ok(i) => i + 1,
-    //     Err(i) => i + 1,
-    // };
+    let k = match svd
+        .singular_values
+        .as_slice()
+        .binary_search_by(|x| err.partial_cmp(x).unwrap())
+    {
+        Ok(i) | Err(i) => i,
+    };
 
     (k, rank_k_approx(svd, k, prev, prev_k))
 }
