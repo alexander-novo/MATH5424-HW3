@@ -70,7 +70,7 @@
 \renewcommand{\qedsymbol}{$\bigpumpkin$}
 
 \newcommand{\comp}  {\mathbb{C}}
-\newcommand{\reals} {\mathbb{R}}
+\newcommand{\reals}{\mathbb{R}}
 \newcommand{\ints}  {\mathbb{Z}}
 \newcommand{\mat}[1]{\symbfit{#1}}
 \newcommand{\fexp}[1]{\phantom{^{#1}}2^{#1}}
@@ -306,7 +306,24 @@
 		      \sigma_1(\mat{A}) = \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2}.
 	      \]
 	      \begin{proof}
-
+		      For \(\vec{y},\vec{x}\neq 0\) we have
+		      \begin{equation}
+			      \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} = \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \qty(\frac{\vec{y}}{\norm{\vec{y}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \label{eq:Golubsetup}
+		      \end{equation}
+		      which is the inner product, or the projection of a unit vector \(\frac{\vec{y}}{\norm{\vec{y}}_2}\) onto \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). The maximum of this quantity is achieved when \(\frac{\vec{y}}{\norm{\vec{y}}_2}\) is the unit vector in the direction of \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). In other words,
+		      \begin{align*}
+			      \frac{\vec{y}}{\norm{\vec{y}}_2} & = \frac{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}}_2}{\norm{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}}_2} \\
+			                                       & = \frac{\mat{A}\vec{x}}{\norm{\mat{A}\vec{x}}_2}.
+		      \end{align*}
+		      Then in \cref{eq:Golubsetup} we have
+		      \begin{align*}
+			      \max_{\substack{\vec{y} \in \reals^m,\\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} &= \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \qty(\frac{\vec{y}}{\norm{\vec{y}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}  \\
+			       & = \max_{\vec{x} \in \reals^n} \qty( \frac{\mat{A}\vec{x}}{\norm{\mat{A}\vec{x}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \\
+			       & = \max_{\vec{x} \in \reals^n} \frac{\norm{\mat{A}\vec{x}}_2^2}{\norm{\mat{A}\vec{x}}_2\norm{\vec{x}}_2}                            \\
+			       & = \max_{\vec{x} \in \reals^n} \frac{\norm{\mat{A}\vec{x}}_2}{\norm{\vec{x}}_2}                                                     \\
+			       & = \norm{\mat{A}}_2                                                                                                                 \\
+			       & = \sigma_1(\mat{A}).
+		      \end{align*}
 	      \end{proof}
 
 	      % 6
