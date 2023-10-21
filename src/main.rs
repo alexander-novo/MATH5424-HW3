@@ -2,7 +2,7 @@
 use image::{DynamicImage::ImageLuma8, GrayImage};
 use nalgebra::{
     allocator::Allocator, ComplexField, DMatrix, DefaultAllocator, Dim, DimMin, DimMinimum, Matrix,
-    RawStorage, SVD,
+    RawStorage, Storage, SVD,
 };
 use num_traits::AsPrimitive;
 use show_image::create_window;
@@ -58,8 +58,12 @@ fn main() {
     println!("Computed Rank of A = {}", svd.rank(tol));
 
     // Compute optimal rank-$\(k\)$ approximations, display them, and save them
+    let mut approx = DMatrix::zeros(m, n);
+    let mut prev_k = 0;
     for k in [1, 10, 50] {
-        mat_to_img_show(&rank_k_approx(&svd, k), format!("Rank_{k}_Approximation"));
+        approx = rank_k_approx(&svd, k, &approx, prev_k);
+        prev_k = k;
+        mat_to_img_show(&approx, format!("Rank_{k}_Approximation"));
         // Print relative errors
         println!(
             "Relative error for A_{k} = {}",
@@ -73,9 +77,13 @@ fn main() {
 }
 
 /// Calculates the optimal rank `k` approximation of a matrix represented by its singular value decomosition.
+/// Uses previously-computed optimal approximation `prev`, which is rank `prev_k`, which must be less than `k`.
+/// For new approximation, pass zero matrix for `prev` and 0 for `prev_k`
 fn rank_k_approx<T: ComplexField, R: DimMin<C>, C: Dim>(
     svd: &SVD<T, R, C>,
     k: usize,
+    prev: &Matrix<T, R, C, impl Storage<T, R, C>>,
+    prev_k: usize,
 ) -> Matrix<T, R, C, <nalgebra::DefaultAllocator as nalgebra::allocator::Allocator<T, R, C>>::Buffer>
 where
     DefaultAllocator: Allocator<T, DimMinimum<R, C>, C>
@@ -85,12 +93,12 @@ where
 {
     let mut u = svd.u.as_ref().unwrap().clone();
     // Multiply $\(\sigma_iu_i\)$ for $\(i\in[1,k]\)$
-    for i in 0..k {
+    for i in prev_k..k {
         let val = svd.singular_values[i].clone();
         u.column_mut(i).scale_mut(val);
     }
     // Multiply $\(\displaystyle\sum_{i=1}^k (\sigma_iu_i )v^{\top}_i \)$
-    u.columns(0, k) * svd.v_t.as_ref().unwrap().rows(0, k)
+    prev + u.columns(prev_k, k - prev_k) * svd.v_t.as_ref().unwrap().rows(prev_k, k - prev_k)
 }
 
 /// Displays and saves the image stored in mat to the file "./out/<`wind_name`>.png"
