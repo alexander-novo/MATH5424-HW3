@@ -453,30 +453,24 @@
 							            xmax = 530,
 							            group style = {group size = 1 by 3},
 							            ymode = log,
-							            extra x ticks = {420},
-							            % restrict y to domain=-167:,
-							            log basis y=10,
 							            ylabel=\(\sigma_i\),
 							            xlabel=\(i\)
 						            ]
-						            \nextgroupplot[] % ymin={1e-167},ymax=1e13
+						            \nextgroupplot
 						            \addplot+[red, mark options={fill=red}] table [
 								            y = A1,
 								            x expr = \coordindex +1
 							            ] {out/all_singular_values8.dat};
-						            % \addplot[dashed] coordinates {(420, 1e-167)  (420, 1e13)};
-						            \nextgroupplot[] % ymin={1e-18},ymax=1e2
+						            \nextgroupplot
 						            \addplot+[green, mark options={fill=green}] table [
 								            y = A2,
 								            x expr = \coordindex +1
 							            ] {out/all_singular_values8.dat};
-						            % \addplot[dashed] coordinates {(420, 1e-18)  (420, 1e2)};
-						            \nextgroupplot[] % ymin={1e-18},ymax=1e2
+						            \nextgroupplot
 						            \addplot+[blue, mark options={fill=blue}] table [
 								            y = A3,
 								            x expr = \coordindex +1
 							            ] {out/all_singular_values8.dat};
-						            % \addplot[dashed] coordinates {(420, 1e-18)  (420, 1e2)};
 					            \end{groupplot}
 				            \end{tikzpicture}
 				            \caption{Plots showing all singular values of \(\mat{A}\) and just the first 700 singular values of \(\mat{A}\). Note the large gap between values that occurs at the calculated rank of \(\mat{A}\) (654).}\label{fig:singvals}
