@@ -7,22 +7,22 @@
 	],
 	"latex-workshop.latex.recipes": [
 		{
-			"name": "latexmk (lualatex)",
+			"name": "latexmk (xelatex)",
 			"tools": [
-				"lualatexmk"
+				"xelatexmk"
 			]
 		}
 	],
 	"latex-workshop.latex.tools": [
 		{
-			"name": "lualatexmk",
+			"name": "xelatexmk",
 			"command": "latexmk",
 			"args": [
 				"-synctex=1",
 				"-shell-escape",
 				"-interaction=nonstopmode",
 				"-file-line-error",
-				"-lualatex",
+				"-xelatex",
 				"-outdir=%OUTDIR%",
 				"%DOC%"
 			],

@@ -1,9 +1,2 @@
-\newcommand{\comp}  {\mathbb{C}}
-\newcommand{\reals} {\mathbb{R}}
-\newcommand{\ints}  {\mathbb{Z}}
-\newcommand{\mat}[1]{\bm{#1}}
-\DeclareMathOperator{\sgn}{sgn}
-\DeclareMathOperator{\cond}{cond}
-\newcommand{\fexp}[1]{\phantom{^{#1}}2^{#1}}
 \newcommand{\bm}[1]{\boldsymbol{#1}}
 \newcommand{\shortintertext}[1]{\text{#1}\\}

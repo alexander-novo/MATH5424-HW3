@@ -5,3 +5,5 @@
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qcompat=1.18 fillbetween\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qcompat=1.18 fillbetween\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q(From Golub and van Loan) Given \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, let \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q denote the largest singular value of \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qlatinmodern-math.otf texgyrepagella-math.otf[range=bb]\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qlatinmodern-math.otf texgyrepagella-math.otf[range=bb]\\E$"}

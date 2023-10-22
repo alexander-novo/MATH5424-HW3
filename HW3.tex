@@ -1,15 +1,12 @@
 \documentclass{article}
 
-\usepackage[margin=1in]{geometry}
-\usepackage{amsmath,amsthm,amsfonts,mathtools}
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsthm,mathtools}
 \usepackage[USenglish]{babel}
 \usepackage{hyperref, xurl}     % Used for better URL formatting
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
 \usepackage{microtype} % Help text fit on the page more, rather than spilling into the margins
 \usepackage{fancyhdr}
 \usepackage[inline]{enumitem}
-\usepackage{bm}
 \usepackage{cleveref}
 
 \usepackage{physics}
@@ -17,12 +14,20 @@
 \usepackage{cancel}
 \usepackage{halloweenmath}
 \usepackage[newfloat]{minted}
-\usepackage{xcolor, mdframed, fontspec}
+\usepackage{xcolor, mdframed}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{tasks}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+\usepackage{unicode-math}
+\usepackage{float}
+
+\setmathfont{latinmodern-math.otf}
+\setmathfont{texgyrepagella-math.otf}[range=bb]
 
 \pgfplotsset{compat=1.18}
 \usepgfplotslibrary{fillbetween}
+\usepgfplotslibrary{groupplots}
 
 % Clickable link configuration
 \hypersetup{
@@ -31,6 +36,7 @@
 }
 
 \crefname{enumi}{part}{parts}
+\crefname{algocf}{algorithm}{algorithms}
 
 \theoremstyle{definition}
 \newtheorem*{answer}{Answer}
@@ -64,9 +70,9 @@
 \renewcommand{\qedsymbol}{$\bigpumpkin$}
 
 \newcommand{\comp}  {\mathbb{C}}
-\newcommand{\reals} {\mathbb{R}}
+\newcommand{\reals}{\mathbb{R}}
 \newcommand{\ints}  {\mathbb{Z}}
-\newcommand{\mat}[1]{\bm{#1}}
+\newcommand{\mat}[1]{\symbfit{#1}}
 \newcommand{\fexp}[1]{\phantom{^{#1}}2^{#1}}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\cond}{cond}
@@ -76,6 +82,7 @@
 \DeclareMathOperator{\nullsp}{Null}
 
 \newtheorem{lemma}{Lemma}
+\DeclareMathOperator{\spn}{span}
 
 \begin{document}
 
@@ -152,24 +159,63 @@
 		  \end{proof}
 
 	      % 2
-	\item In this question we will ask how to solve \(\mat{B}\vec{y} = \vec{c}\) given a fast way to solve \(\mat{A}\vec{x} = \vec{b}\), where \(\mat{A} - \mat{B}\) is "small" in some sense.
+	\item In this question we will ask how to solve \(\mat{B}\vec{y} = \vec{c}\) given a fast way to solve \(\mat{A}\vec{x} = \vec{b}\), where \(\mat{A} - \mat{B}\) is ``small'' in some sense.
 	      \begin{enumerate}
-		      \item Prove the \emph{Sherman-Morrison formula}: Let \(\mat{A}\) be nonsingular, \(\vec{u}\) and \(\vec{v}\) be column vectors, and \(\mat{A} + \vec{u}\vec{v}^\top\) be nonsingular. Then \((\mat{A} + \vec{u}\vec{v}^\top)^{-1} = \mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})\)
+		      \item Prove the \emph{Sherman-Morrison formula}: Let \(\mat{A}\) be nonsingular, \(\vec{u}\) and \(\vec{v}\) be column vectors, and \(\mat{A} + \vec{u}\vec{v}^\top\) be nonsingular. Then \((\mat{A} + \vec{u}\vec{v}^\top)^{-1} = \mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})\). \label{item:sherman-morrison}
 
-		            More generally, prove the \emph{Sherman-Morrison-Woodbury formula}: Let \(\mat{U}\) and \(\mat{V}\) be \(n \times k\) rectangular matrices, where \(k < n\) and \(\mat{A}\) is \(n \times n\). Then \(\mat{T} = \mat{I} + \mat{V}^\top \mat{A}^{-1} \mat{U}\) is nonsingular if and only if \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular, in which case \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}T^{-1} \mat{V}^\top \mat{A}^{-1}\).
+		            More generally, prove the \emph{Sherman-Morrison-Woodbury formula}: Let \(\mat{U}\) and \(\mat{V}\) be \(n \times k\) rectangular matrices, where \(k < n\) and \(\mat{A}\) is \(n \times n\). Then \(\mat{T} = \mat{I} + \mat{V}^\top \mat{A}^{-1} \mat{U}\) is nonsingular if and only if \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular, in which case \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}\).
 		            \begin{proof}
-
+			            First, we have
+			            \begin{align*}
+				            (\mat{A} + \vec{u}\vec{v}^\top) \qty(\mat{A}^{-1} - \frac{\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}) & = \cancelto{\mat{I}}{\mat{A}\mat{A}^{-1}} - \frac{\cancel{\mat{A}\mat{A}^{-1}}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}} + \vec{u}\vec{v}^\top\mat{A}^{-1} - \frac{\vec{u}\vec{v}^\top\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}} \\
+				                                                                                                                                                           & = \mat{I} - \frac{\vec{u}\vec{v}^\top\mat{A}^{-1} - \vec{u}\vec{v}^\top\mat{A}^{-1}(1 + \vec{v}^\top \mat{A}^{-1} \vec{u}) + \vec{u}\vec{v}^\top\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}                                                                    \\
+				                                                                                                                                                           & = \mat{I} - \frac{\cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}} - \cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}} - \vec{u}\vec{v}^\top\mat{A}^{-1}\vec{v}^\top \mat{A}^{-1} \vec{u} + \vec{u}\vec{v}^\top\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1}}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}                      \\
+				                                                                                                                                                           & = \mat{I} - \frac{\vec{v}^\top \mat{A}^{-1} \vec{u}(- \cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}} + \cancel{\vec{u}\vec{v}^\top\mat{A}^{-1}})}{1 + \vec{v}^\top \mat{A}^{-1} \vec{u}}                                                                                                                     \\
+				                                                                                                                                                           & = \mat{I},
+			            \end{align*}
+			            so \((\mat{A} + \vec{u}\vec{v}^\top)^{-1} = \mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})\). Then, assume \(\mat{T} = \mat{I} + \mat{V}^\top \mat{A}^{-1} \mat{U}\) is nonsingular. We have
+			            \begin{align*}
+				            (\mat{A} + \mat{U}\mat{V}^\top )(\mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}) & = \cancelto{\mat{I}}{\mat{A}\mat{A}^{-1}} - \cancel{\mat{A}\mat{A}^{-1}} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}                           \\
+				                                                                                                                        & \phantom{{}=}+ \mat{U}\mat{V}^\top\mat{A}^{-1} - \mat{U}\mat{V}^\top\mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}                   \\
+				                                                                                                                        & = \mat{I} - \mat{U}(\mat{T}^{-1} - \mat{I} + \underbrace{\mat{V}^\top\mat{A}^{-1}\mat{U}}_{\mat{T}-\mat{I}}\mat{T}^{-1})\mat{V}^\top\mat{A}^{-1} \\
+				                                                                                                                        & = \mat{I} - \mat{U}(\cancel{\mat{T}^{-1}} - \cancel{\mat{I}} + \cancel{\mat{T}\mat{T}^{-1}} - \cancel{\mat{T}^{-1}})\mat{V}^\top\mat{A}^{-1}     \\
+				                                                                                                                        & = \mat{I},
+			            \end{align*}
+			            so \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular and \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{T}^{-1} \mat{V}^\top \mat{A}^{-1}\). Finally, assume \(\mat{A} + \mat{U}\mat{V}^\top\) is nonsingular and \((\mat{A} + \mat{U}\mat{V}^\top )^{-1} = \mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1}\) for some \(\mat{B},\ k \times k\). Then we have
+			            \begin{alignat*}{4}
+				                     &  & \mat{I} & = (\mat{A} + \mat{U}\mat{V}^\top )(\mat{A} + \mat{U}\mat{V}^\top )^{-1}                                                                                                                                                       \\
+				                     &  &         & = (\mat{A} + \mat{U}\mat{V}^\top)(\mat{A}^{-1} - \mat{A}^{-1} \mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1})                                                                                                                       \\
+				                     &  &         & = \cancelto{\mat{I}}{\mat{A}\mat{A}^{-1}} - \cancel{\mat{A}\mat{A}^{-1}}\mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1} + \mat{U}\mat{V}^\top\mat{A}^{-1} - \mat{U}\mat{V}^\top\mat{A}^{-1} \mat{U}\mat{B} \mat{V}^\top \mat{A}^{-1} \\
+				            \implies &  & \mat{0} & = \mat{U}(- \mat{B} + \mat{I} - \mat{V}^\top\mat{A}^{-1} \mat{U}\mat{B} )\mat{V}^\top \mat{A}^{-1}                                                                                                                            \\
+				            \implies &  & \mat{0} & = \mat{I} - \underbrace{(\mat{I} + \mat{V}^\top\mat{A}^{-1} \mat{U})}_{\mat{T}}\mat{B}                                                                                                                                        \\
+				            \implies &  & \mat{I} & = \mat{T}\mat{B},
+			            \end{alignat*}
+			            therefore \(\mat{T}\) is invertible and non-singular, and \(\mat{B} = \mat{T}^{-1}\).
 		            \end{proof}
 
 		      \item If you have a fast algorithm to solve \(\mat{A}\vec{x} = \vec{b}\), show how to build a fast solver for \(\mat{B}\vec{y} = \vec{c}\), where \(\mat{B} = \mat{A} + \vec{u}\vec{v}^\top\).
 		            \begin{answer}
+			            We have
+			            \begin{align*}
+				            \vec{y} & = \mat{B}^{-1} \vec{c}                                                                                                                                              \\
+				                    & = (\mat{A} + \vec{u}\vec{v}^\top)^{-1} \vec{c}                                                                                                                      \\
+				                    & \stackrel{\mathclap{\ref{item:sherman-morrison}}}{=} (\mat{A}^{-1} - (\mat{A}^{-1}\vec{u}\vec{v}^\top\mat{A}^{-1})/(1 + \vec{v}^\top \mat{A}^{-1} \vec{u})) \vec{c} \\
+				                    & = \mat{A}^{-1}\vec{c} - (\mat{A}^{-1}\vec{u})\vec{v}^\top(\mat{A}^{-1}\vec{c})/(1 + \vec{v}^\top (\mat{A}^{-1} \vec{u})).
+			            \end{align*}
+
+			            Then, an algorithm to quickly solve this problem can be found in \cref{alg:quick-solve}.
+			            \begin{algorithm}
+				            \caption{An algorithm to quickly solve \((\mat{A} + \vec{u}\vec{v}^\top)\vec{y} = \vec{c}\) given an algorithm to quickly solve \(\mat{A}\vec{x} = \vec{b}\).}
+				            \label{alg:quick-solve}
+				            \KwData{\(\mat{A},\ \vec{c},\ \vec{u},\ \vec{v}\)}
+				            \KwResult{\(\vec{y} = (\mat{A} + \vec{u}\vec{v}^\top)^{-1}\vec{c}\)}
+				            Solve \(\mat{A}\vec{w} = \vec{c}\)\;
+				            Solve \(\mat{A}\vec{x} = \vec{u}\)\;
+				            \(\vec{y} \gets \vec{w} - \vec{x}\vec{v}^\top\vec{w}/(1 + \vec{v}^\top \vec{x})\)\;
+			            \end{algorithm}
 
 		            \end{answer}
 
-		      \item Suppose that \(\|\mat{A}-\mat{B}\|\) is ``small'' and you have a fast algorithm for solving \(\mat{A}\vec{x} = \vec{b}\). Describe an iterative scheme for solving \(\mat{B}\vec{y} = \vec{c}\). How fast do you expect your algorithm to converge? Hint: Use iterative refinement.
-		            \begin{answer}
-
-		            \end{answer}
 	      \end{enumerate}
 
 	      % 3
@@ -199,7 +245,7 @@
 
 		      \item Compute the LU decomposition \(\mat{A} = \mat{L}\mat{U}\) and convert \(\mat{A}x = b\) into \(\mat{U}x = y\) where \(\mat{U}\) is upper triangular and solve for \(x\).
 		            \begin{answer}
-
+			            The LU decomposition is please
 		            \end{answer}
 
 		      \item Using \(\mat{L}\) and \(\mat{U}\) from the earlier steps, solve the new system \(\mat{A}\tilde{x} = \tilde{b}\) where
@@ -236,17 +282,89 @@
 	      \begin{enumerate}
 		      \item Find \(\rank(\mat{A}),\ \|\mat{A}\|_2\) and \(\|\mat{A}\|_F\).
 		            \begin{answer}
-
+			            We have
+			            \begin{align*}
+				            \rank(\mat{A}) & = 2,                                                                                                   \\
+				            \|\mat{A}\|_2  & = \max_i \sqrt{\lambda_i(A^\top A)}                                                                    \\
+				                           & = \sqrt{\sigma_1^2(\mat{A})}                                                                           \\
+				                           & = |\sigma_1(\mat{A})| = 4,                                                                             \\
+				            \|\mat{A}\|_F  & = \sqrt{\trace((\mat{U}\mat{\Sigma}\mat{V}^\top)^\top(\mat{U}\mat{\Sigma}\mat{V}^\top))}               \\
+				                           & = \sqrt{\trace(\cancel{\mat{V}^\top\mat{V}}\mat{\Sigma}^\top\cancel{\mat{U}^\top\mat{U}}\mat{\Sigma})} \\
+				                           & = \sqrt{\trace^2(\mat{\Sigma})}                                                                        \\
+				                           & = |\trace(\mat{\Sigma})|                                                                               \\
+				                           & = 4 + 3 = 7.
+			            \end{align*}
 		            \end{answer}
 
 		      \item Find an orthonormal basis for \(\range(\mat{A}),\ \nullsp(\mat{A}),\ \range(\mat{A}^\top)\), and \(\nullsp(\mat{A}^\top)\).
 		            \begin{answer}
-
+			            We have
+			            \begin{alignat*}{4}
+				            \range(\mat{A})       & = \spn \qty{\begin{bmatrix}1\\ 0\\ 0\end{bmatrix}, \begin{bmatrix} 0\\ 0.6\\ -0.8\end{bmatrix}},                   \\
+				            \nullsp(\mat{A})      & = \spn \emptyset,                                                                                                  \\
+				            \range(\mat{A}^\top)  & = \spn \qty{\begin{bmatrix}0.6\\ -0.8\end{bmatrix}, \begin{bmatrix}-0.8\\ -0.6\end{bmatrix}},                      \\
+				            \nullsp(\mat{A}^\top) & = \reals^3 \setminus \spn \qty{\begin{bmatrix}1\\ 0\\ 0\end{bmatrix}, \begin{bmatrix} 0\\ 0.6\\ -0.8\end{bmatrix}} \\
+				                                  & = \spn \qty{\begin{bmatrix} 0\\ 0.8\\ 0.6\end{bmatrix}}.
+			            \end{alignat*}
+			            Note that the given sets consist of orthogonal unit vectors, so they are orthonormal bases for the sets which they span.
 		            \end{answer}
 
 		      \item Form the optimal rank-1 approximation \(\mat{A}_1\) to \(\mat{A}\) in the 2-norm? What is the error matrix \(\mat{A} - \mat{A}_1\), and what is the norm of the error \(\|\mat{A} - \mat{A}_1\|_2\)? The error matrix and the norm of the error follow directly from the SVD; no computation is needed.
 		            \begin{answer}
-
+			            We have
+			            \begin{align*}
+				            \mat{A}_1                 & = \begin{bmatrix}
+					                                          1 & 0    \\
+					                                          0 & 0.6  \\
+					                                          0 & -0.8
+				                                          \end{bmatrix}
+				            \begin{bmatrix}
+					            4 & 0 \\
+					            0 & 0
+				            \end{bmatrix}
+				            \begin{bmatrix}
+					            0.6  & -0.8 \\
+					            -0.8 & -0.6 \\
+				            \end{bmatrix}^\top                                                                                \\
+				                                      & = \begin{bmatrix}
+					                                          1 \\
+					                                          0 \\
+					                                          0
+				                                          \end{bmatrix}
+				            \begin{bmatrix}
+					            4
+				            \end{bmatrix}
+				            \begin{bmatrix}
+					            0.6  \\
+					            -0.8 \\
+				            \end{bmatrix}^\top,                                                                               \\
+				            \mat{A} - \mat{A}_1       & = \begin{bmatrix}
+					                                          1 & 0    \\
+					                                          0 & 0.6  \\
+					                                          0 & -0.8
+				                                          \end{bmatrix} \qty(\begin{bmatrix}
+						                                                             4 & 0 \\
+						                                                             0 & 3
+					                                                             \end{bmatrix} - \begin{bmatrix}
+						                                                                             4 & 0 \\
+						                                                                             0 & 0
+					                                                                             \end{bmatrix})\begin{bmatrix}
+					                                                                                           0.6  & -0.8 \\
+					                                                                                           -0.8 & -0.6 \\
+				                                                                                           \end{bmatrix}^\top \\
+				                                      & = \begin{bmatrix}
+					                                          1 & 0    \\
+					                                          0 & 0.6  \\
+					                                          0 & -0.8
+				                                          \end{bmatrix}\begin{bmatrix}
+					                                                       0 & 0 \\
+					                                                       0 & 3
+				                                                       \end{bmatrix}\begin{bmatrix}
+					                                                                    0.6  & -0.8 \\
+					                                                                    -0.8 & -0.6 \\
+				                                                                    \end{bmatrix}^\top,                       \\
+				            \|\mat{A} - \mat{A}_1\|_2 & = 3.
+			            \end{align*}
 		            \end{answer}
 	      \end{enumerate}
 
@@ -256,9 +374,25 @@
 		      \sigma_1(\mat{A}) = \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2}.
 	      \]
 	      \begin{proof}
-			% use argument that projection of unit vector (y^T/y) onto another vector maxed means that other vector is also unit vector
-			% also A =/= 0, then max Ax=/=0 (x=/=0) is not 0 since there is some x that is not in ker(A) vs A=0 obviously holds
-			% TODO Z type picture from phone 10/8
+		      For \(\vec{y},\vec{x}\neq 0\) we have
+		      \begin{align}
+			      \max_{\substack{\vec{y} \in \reals^m,   \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} &= \max_{\substack{\vec{y} \in \reals^m, \\ \vec{x} \in \reals^n}} \qty(\frac{\vec{y}}{\norm{\vec{y}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \nonumber \\
+			       & = \max_{\substack{\vec{y}\in\reals^n \\\norm{\vec{y}}=1, \\ \vec{x} \in \reals^n}} \vec{y}^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \label{eq:Golubsetup}
+		      \end{align}
+		      which is the inner product, or the projection of a unit vector \(\vec{y}\) onto \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). The maximum of this quantity is achieved when \(\vec{y}\) is the unit vector in the direction of \(\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}\). In other words,
+		      \begin{align*}
+			      \vec{y} & = \frac{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}}_2}{\norm{\displaystyle\frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}}_2} \\
+			              & = \frac{\mat{A}\vec{x}}{\norm{\mat{A}\vec{x}}_2}.
+		      \end{align*}
+		      Then in \cref{eq:Golubsetup} we have
+		      \begin{align*}
+			      \max_{\substack{\vec{y} \in \reals^m,                                                                                                 \\ \vec{x} \in \reals^n}} \frac{\vec{y}^\top \mat{A} \vec{x}}{\|\vec{y}\|_2\|\vec{x}\|_2} &= \max_{\substack{\vec{y}\in\reals^n \\\norm{\vec{y}}=1, \\ \vec{x} \in \reals^n}} \vec{y}^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2}  \\
+			       & = \max_{\vec{x} \in \reals^n} \qty( \frac{\mat{A}\vec{x}}{\norm{\mat{A}\vec{x}}_2})^{\top} \frac{\mat{A}\vec{x}}{\norm{\vec{x}}_2} \\
+			       & = \max_{\vec{x} \in \reals^n} \frac{\norm{\mat{A}\vec{x}}_2^2}{\norm{\mat{A}\vec{x}}_2\norm{\vec{x}}_2}                            \\
+			       & = \max_{\vec{x} \in \reals^n} \frac{\norm{\mat{A}\vec{x}}_2}{\norm{\vec{x}}_2}                                                     \\
+			       & = \norm{\mat{A}}_2                                                                                                                 \\
+			       & = \sigma_1(\mat{A}).
+		      \end{align*}
 	      \end{proof}
 
 	      % 6
@@ -278,7 +412,17 @@
 	      \end{equation}
 	      Show that has \(\tilde{\mat{A}}_k\) in \eqref{eq:a-tilde} has rank-\(k\) and minimizes the error, i.e, \(\|\mat{A} - \tilde{\mat{A}}_k\| = \sigma_{k+1}\).
 	      \begin{proof}
-
+		      Observe that \(\sum_{j = 1}^k(\sigma_j - \eta_j)\vec{u}_j\vec{v}_j^\top\) is the SVD of \(\tilde{\mat{A}}_k\), with singular values of \((\sigma_j - \eta_j)\). Since \(|\eta_j| < \sigma_{k + 1} \leq \sigma_j\) for all \(1 \leq j \leq k\), then \(\sigma_j - \eta_j > 0\), and \(\tilde{\mat{A}}_k\) has \(k\) non-zero singular values, so it has rank \(k\). As well, we have
+		      \begin{align*}
+			      \mat{A} - \tilde{\mat{A}}_k & = \sum_{j = 1}^r \sigma_j \vec{u}_j\vec{v}_j^\top - \sum_{j = 1}^k(\sigma_j - \eta_j)\vec{u}_j\vec{v}_j^\top                                             \\
+			                                  & = \sum_{j = 1}^k \qty[\sigma_j \vec{u}_j\vec{v}_j^\top - (\sigma_j - \eta_j)\vec{u}_j\vec{v}_j^\top] + \sum_{j = k+1}^r \sigma_j \vec{u}_j\vec{v}_j^\top \\
+			                                  & = \sum_{j = 1}^k \eta_j\vec{u}_j\vec{v}_j^\top + \sum_{j = k+1}^r \sigma_j \vec{u}_j\vec{v}_j^\top.
+		      \end{align*}
+		      Note, then, that this is the SVD of \(\mat{A} - \tilde{\mat{A}}_k\), with eigenvalues of \(|\eta_j|\) for \(1 \leq j \leq k\) and \(\sigma_j\) for \(k+1 \leq j \leq r\). Since \(|\eta_j| < \sigma_{k+1}\) for all \(j\) and \(\sigma_{k+1} \geq \sigma_{k}\) for all \(j\), we must have
+		      \[
+			      \|\mat{A} - \tilde{\mat{A}}_k\|_2 = \sigma_{k+1},
+		      \]
+		      as required.
 	      \end{proof}
 
 	      % 7
@@ -290,11 +434,73 @@
 	      \begin{enumerate}
 		      \item Compute the short (reduced) SVD of \(\mat{A}\) using Matlab. Then plot the normalized singular values under \texttt{subplot(2,1,2)}. This figure might be hard to read due to the scale of the \(y\)-axis. Then plot only the leading 700 normalized singular values under \texttt{subplot(2,1,2)}. What do you observe? What would be your decision for the (numerical) rank of \(\mat{A}\) based on these comments? Justify your reasoning. Does the result of the built-in rank command coincide with your decision?
 		            \begin{answer}
-
+			            Plots of the singular values of \(\mat{A}\) can be found in \cref{fig:singvals}. We notice a significant drop off in singular values after the \(654^\text{th}\) singular value. Because of this, the numerical rank of \(\mat{A}\) should be 654. Indeed, this is the computed rank of \(\mat{A}\).
+			            \begin{figure}[H]
+				            \centering\begin{tikzpicture}
+					            \begin{groupplot}[
+							            width = .9\textwidth,
+							            height = .4\textwidth,
+							            xmax = 800,
+							            group style = {group size = 1 by 2},
+							            ymode = log,
+							            extra x ticks = {654},
+							            restrict y to domain=-167:,
+							            log basis y=10,
+							            ylabel=\(\sigma_i\),
+							            xlabel=\(i\)
+						            ]
+						            \nextgroupplot[ymin={1e-167},ymax=1e13]
+						            \addplot table [
+								            y expr = \thisrowno{0},
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values7.dat};
+						            \addplot[dashed] coordinates {(654, 1e-167)  (654, 1e13)};
+						            \nextgroupplot[ymin={1e-18},ymax=1e2]
+						            \addplot table [
+								            y expr = \thisrowno{0},
+								            x expr = \coordindex +1,
+								            restrict x to domain=1:700
+							            ] {out/all_singular_values7.dat};
+						            \addplot[dashed] coordinates {(654, 1e-18)  (654, 1e2)};
+					            \end{groupplot}
+				            \end{tikzpicture}
+				            \caption{Plots showing all singular values of \(\mat{A}\) and just the first 700 singular values of \(\mat{A}\). Note the large gap between values that occurs at the calculated rank of \(\mat{A}\) (654).}\label{fig:singvals}
+			            \end{figure}
 		            \end{answer}
 
-		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for\( k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
-		            \begin{answer}
+		      \item Construct the optimal rank-\(k\) approximation \(\mat{A}_k\) to \(\mat{A}\) in the 2-norm for \(k = 1, k = 10\), and \(k = 50\). In each case, compute the relative error \(\frac{\|\mat{A} - \mat{A}_k\|_2}{\|\mat{A}\|_2}\). Note that you do NOT need to form \(\mat{A} - \mat{A}_k\) to compute these error values; the singular values are all you need. Use \texttt{subplot(2,2,1)} to plot the original image in the top left corner. Then, use the \texttt{imshow} command on the three low-rank approximations and plot them in the \texttt{subplot(2,2,2),} \texttt{subplot(2,2,3),} and \texttt{subplot(2,2,4)} spots. Put appropriate titles on each plot, e.g., ``original image'', ``rank-1 approximation'' etc., using the title command. Plots without appropriate labels and explanations will lose points. These plots need to be attached to the .pdf file.
+		            \begin{answer} The plots of the rank-\(k\) approximations, for \(k=1,10,50\), can be found in \cref{fig:Thums}, with program output displayed below:
+			            \begin{mdframed}[backgroundcolor=lightgray]
+				            \inputminted{text}{out/output.txt}
+			            \end{mdframed}
+			            \begin{figure}[H]
+				            \centering
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Original matrix as image check.png}
+					            \caption{Original Image}\label{fig:ogThumb}
+				            \end{subfigure}\qquad
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Rank_1_Approximation.png}
+					            \caption{\(k=1\)}\label{fig:Thumb1}
+				            \end{subfigure}\\
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Rank_10_Approximation.png}
+					            \caption{\(k=10\)}\label{fig:Thumb10}
+				            \end{subfigure}\qquad
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/Rank_50_Approximation.png}
+					            \caption{\(k=50\)}\label{fig:Thumb50}
+				            \end{subfigure}
+				            \caption{Original fingerprint image compared to its optimal rank-\(k \) approximations.}\label{fig:Thums}
+			            \end{figure}
+			            The code is given below:
+			            \begin{mdframed}[backgroundcolor=lightgray]
+				            \rustcode[fontsize=\footnotesize]{src/prob7.rs}
+			            \end{mdframed}
 
 		            \end{answer}
 	      \end{enumerate}
@@ -306,7 +512,37 @@
 	      \begin{enumerate}
 		      \item Compute the SVDs of every layer A1, A2, and A3. Then compute the vector of normalized singular values for every layer. Using the subplot comment (and logarithmic y-axis), plot all three vectors in Figure 2.
 		            \begin{answer}
-
+			            \begin{figure}[H]
+				            \centering\begin{tikzpicture}
+					            \begin{groupplot}[
+							            width = .9\textwidth,
+							            height = .3\textwidth,
+							            xmin = -1,
+							            xmax = 530,
+							            group style = {group size = 1 by 3},
+							            ymode = log,
+							            ylabel=\(\sigma_i\),
+							            xlabel=\(i\)
+						            ]
+						            \nextgroupplot
+						            \addplot+[red, mark options={fill=red}] table [
+								            y = A1,
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values8.dat};
+						            \nextgroupplot
+						            \addplot+[green, mark options={fill=green}] table [
+								            y = A2,
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values8.dat};
+						            \nextgroupplot
+						            \addplot+[blue, mark options={fill=blue}] table [
+								            y = A3,
+								            x expr = \coordindex +1
+							            ] {out/all_singular_values8.dat};
+					            \end{groupplot}
+				            \end{tikzpicture}
+				            \caption{Plots showing all normalized singular values of hokiebirdwithacat, split into red, green, and blue components.}\label{fig:birdsingvals}
+			            \end{figure}
 		            \end{answer}
 
 		      \item \underline{Use the same error tolerance for every layer}: Find the smallest rank-k for each layer such that the relative error in each layer is less than
