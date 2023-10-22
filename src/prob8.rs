@@ -66,20 +66,30 @@ fn main() -> Result<(), Box<dyn Error>> {
     // notify Terminal of completed SVD printing
     eprintln!("finished printing");
 
-    // Compute optimal rank-$\(k\)$ approximations, display them, and save them
-    let mut approx = DMatrix::zeros(m, n);
-    let mut prev_k = 0;
+    // Compute optimal rank-$\(k\)$ approximations for specified max errors, display them, and save them
+    let mut approx1 = DMatrix::zeros(m, n);
+    let mut prev_k1 = 0;
+    let mut approx2 = DMatrix::zeros(m, n);
+    let mut prev_k2 = 0;
+    let mut approx3 = DMatrix::zeros(m, n);
+    let mut prev_k3 = 0;
     for err in [0.10, 0.05, 0.01] {
-        (prev_k, approx) = rel_err_approx(&svd1, err, &approx, prev_k);
-        mat_to_img_show(&approx, &a2, &a3, format!("Rank_{prev_k}_Approximation"))?;
+        (prev_k1, approx1) = rel_err_approx(&svd1, err, &approx1, prev_k1);
+        (prev_k2, approx2) = rel_err_approx(&svd2, err, &approx2, prev_k2);
+        (prev_k3, approx3) = rel_err_approx(&svd3, err, &approx3, prev_k3);
+        mat_to_img_show(&approx1, &approx2, &approx3, format!("err_all_{err}_Approximation"))?;
         // Print relative errors
         println!(
-            "Relative error for A_{} = {}\nRelative error for A_{} = {}",
-            // Rust is 0 indexed, need to subtract 1
-            prev_k - 1,
-            svd1.singular_values[(prev_k) - 1] / svd1.singular_values[1 - 1],
-            prev_k,
-            svd1.singular_values[(prev_k + 1) - 1] / svd1.singular_values[1 - 1],
+            "Goal error = {err}\n
+            Smallest k for layer 1 = {:3}\tActual error for layer 1 = {}\n
+            Smallest k for layer 2 = {:3}\tActual error for layer 2 = {}\n
+            Smallest k for layer 3 = {:3}\tActual error for layer 3 = {}\n",
+            prev_k1 -1,
+            svd1.singular_values[(prev_k1 + 1) - 1] / svd1.singular_values[1 - 1],
+            prev_k2 -1,
+            svd2.singular_values[(prev_k2 + 1) - 1] / svd2.singular_values[1 - 1],
+            prev_k3 -1,
+            svd3.singular_values[(prev_k3 + 1) - 1] / svd3.singular_values[1 - 1],
         );
     }
 
