@@ -116,7 +116,7 @@
 					\kappa_2(\mat{A})^2 & = \qty(\frac{\sigma_1}{\sigma_m})^2 \\
 					                    & = \frac{\sigma_1^2}{\sigma_m^2}.
 				\end{align*}
-				Note, we may have \(\sigma_m=0\) if TODO CHECK WORDING \(\mat{A}\) is not full rank. In this case, we still have \(\kappa_2(\mat{A}^\top \mat{A})=\infty=\kappa_2(\mat{A})^2\).
+				Note, we may have \(\sigma_m=0\) if \(\mat{A}\) is not full rank. In this case, we still have \(\kappa_2(\mat{A}^\top \mat{A})=\infty=\kappa_2(\mat{A})^2\).
 
 				Next, for \(\mat{M} = \mat{L}\mat{L}^\top\), we have 
 				\begin{align*}
@@ -239,13 +239,78 @@
 							\det\mat{A}_1 & = \mqty|1| = 1 \\
 							\det\mat{A}_2 & = \mqty|2 & 1 \\ 4 & 3| = 2 \\
 							\det\mat{A}_3 & = \mqty|2 & 1 & 1 \\ 4 & 3 & 3 \\ 8 & 7 & 9| = (2)(6)-(1)(12)+(1)(4) = 4 \\
-							\det\mat{A}_4 & = \mqty|2 & 1 & 1 & 0 \\ 4 & 3 & 3 & 1 \\ 8 & 7 & 9 & 5 \\ 6 & 7 & 9 & 8|
+							\det\mat{A}_4 & = \mqty|2 & 1 & 1 & 0 \\ 4 & 3 & 3 & 1 \\ 8 & 7 & 9 & 5 \\ 6 & 7 & 9 & 8| = 2\mqty|3 & 3 & 1 \\ 7 & 9 & 5 \\ 7 & 9 & 8|-1\mqty|4 & 3 & 1 \\ 8 & 9 & 5 \\ 6 & 9 & 8| +1\mqty|4 & 3 & 1 \\ 8 & 7 & 5 \\ 6 & 7 & 8| + 0 = 8
 						\end{align*}
+						Since these determinants are all positive the LU decomposition without pivoting is possible.
 		            \end{answer}
 
 		      \item Compute the LU decomposition \(\mat{A} = \mat{L}\mat{U}\) and convert \(\mat{A}x = b\) into \(\mat{U}x = y\) where \(\mat{U}\) is upper triangular and solve for \(x\).
 		            \begin{answer}
-			            The LU decomposition is please
+			            We have 
+						\begin{align*}
+							\begin{bmatrix}
+								\alpha_{11}=2                            & \vec{c}^{\top} = \mqty[1&1&0] \\
+								\displaystyle \vec{a} = \mqty[4\\8\\6] & \hat{\mat{A}} = \mqty[3&3&1\\7&9&5\\7&9&8]
+							\end{bmatrix} 
+						\end{align*}
+						so \(\hat{l}_1 = \vec{a}/\alpha_{11} = \mqty[2\\4\\3]\), and 
+						\begin{align*}
+							\hat{\mat{A}}-\hat{l}_1 \vec{c}^{\top} &= \mqty[3&3&1\\7&9&5\\7&9&8]-\mqty[2\\4\\3]\mqty[1&1&0] \\
+							                                       &= \mqty[3&3&1\\7&9&5\\7&9&8]-\mqty[2&2&0\\4&4&0\\3&3&0] \\
+																   &= \mqty[1&1&1\\3&5&5\\4&6&8].
+						\end{align*}
+						Then the first step of LU gives 
+						\begin{equation}
+							\mqty[1&0\\\hat{l}_1 &\mat{I}_{3}]\mqty[\alpha_{11} & \vec{c}^{\top}\\0 &\hat{\mat{A}}-\hat{l}_1\vec{c}^{\top}] = \mqty[1&0&0&0\\2&1&0&0\\4&0&1&0\\3&0&0&1] \mqty[2&1&1&0\\0&1&1&1\\0&3&5&5\\0&4&6&8] \label{eq:LU1}.
+						\end{equation}
+						Repeating this process on the lower right submatrix in $U_1$ from \cref{eq:LU1} we have
+						\begin{align*}
+							\begin{bmatrix}
+								\alpha_{22}=1                            & \vec{c}^{\top} = \mqty[1&1] \\
+								\displaystyle \vec{a} = \mqty[3\\4] & \hat{\mat{A}} = \mqty[5&5\\6&8]
+							\end{bmatrix} 
+						\end{align*}
+						so \(\hat{l}_2 = \vec{a}/\alpha_{22} = \mqty[3\\4]\), and 
+						\begin{align*}
+							\hat{\mat{A}}-\hat{l}_2 \vec{c}^{\top} &= \mqty[5&5\\6&8]-\mqty[3\\4]\mqty[1&1] \\
+							                                       &= \mqty[5&5\\6&8]-\mqty[3&3\\4&4] \\
+																   &= \mqty[2&2\\2&4].
+						\end{align*}
+						Then the second step of LU gives 
+						\begin{equation}
+							\mat{A} = \mqty[1&0&0&0\\2&1&0&0\\4&3&1&0\\3&4&0&1] \mqty[2&1&1&0\\0&1&1&1\\0&0&2&2\\0&0&2&4] \label{eq:LU2}.
+						\end{equation}
+						Repeating one final time on the lower \(2\times2\) submatrix in \cref{eq:LU2} yields
+						\begin{align*}
+							\begin{bmatrix}
+								\alpha_{33}=2                            & \vec{c}^{\top} = \mqty[2] \\
+								\displaystyle \vec{a} = \mqty[2] & \hat{\mat{A}} = \mqty[4]
+							\end{bmatrix} 
+						\end{align*}
+						so \(\hat{l}_3 = \vec{a}/\alpha_{33} = \mqty[1]\), and 
+						\begin{align*}
+							\hat{\mat{A}}-\hat{l}_3 \vec{c}^{\top} &= \mqty[4]-\mqty[1]\mqty[2] \\
+																   &= \mqty[2].
+						\end{align*}
+						So the third, and final, step of LU gives 
+						\begin{equation}
+						\boxed{\mat{A} = \mqty[1&0&0&0\\2&1&0&0\\4&3&1&0\\3&4&1&1] \mqty[2&1&1&0\\0&1&1&1\\0&0&2&2\\0&0&0&2]} \label{eq:LU}.
+						\end{equation}
+						Now, if we have \(\mat{A}\vec{x}=\vec{b}\) then we have \(\mat{L}\mat{U}\vec{x}=\vec{b}\), where \(\mat{L}\) is invertible. So, \(\mat{U}\vec{x}=\mat{L}^{-1}\vec{b}=\vec{y}\), and we can find \(\vec{y}\) with
+						\begin{align*}
+							\vec{y}=\mat{L}^{-1}\vec{b} &= \mqty[1 & 0 & 0 & 0\\-2 & 1 & 0 & 0\\2 & -3 & 1 & 0\\3 & -1 & -1 & 1]\mqty[4 \\ 11 \\ 29 \\ 30] \\
+							&=\mqty[4\\-8+11\\8-33+29\\12-11-29+30] \\
+							&= \mqty[4\\3\\4\\2].
+						\end{align*}
+						Then the transformed equation is 
+						\[
+							\mat{U}\vec{x}=\vec{y} \implies \mqty[2&1&1&0\\0&1&1&1\\0&0&2&2\\0&0&0&2] \mqty[x_1\\x_2\\x_3\\x_4] = \mqty[4\\3\\4\\2].
+						\]
+						Starting at the bottom, clearly \(x_4 = 1\). Then we have \(2x_3+2x_4=4\implies 2x_3+2=4\implies x_3=1\). Then we have \(x_2+x_3+x_4=3\implies x_2+1+1=3\implies x_2=1\). Finally, we have \(2x_1+x_2+x_3=4\implies 2x_1 + 1+1 =4\implies x_1 = 1\).
+						So,
+						\[
+							\boxed{\vec{x} = \mqty[1\\1\\1\\1]}	.
+						\]
 		            \end{answer}
 
 		      \item Using \(\mat{L}\) and \(\mat{U}\) from the earlier steps, solve the new system \(\mat{A}\tilde{x} = \tilde{b}\) where
@@ -257,7 +322,20 @@
 		            \]
 		            Do NOT perform the Gaussian elimination from scratch. You already have \(\mat{U}\) and \(\mat{L}\).
 		            \begin{answer}
-
+						So, \(\mat{U}\tilde{x}=\mat{L}^{-1}\tilde{b}=\tilde{y}\), and we can find \(\tilde{y}\) with
+						\begin{align*}
+							\tilde{y}=\mat{L}^{-1}\tilde{b} &= \mqty[1 & 0 & 0 & 0\\-2 & 1 & 0 & 0\\2 & -3 & 1 & 0\\3 & -1 & -1 & 1]\mqty[5 \\ 15 \\ 41 \\ 45] \\
+							&=\mqty[5\\-10+15\\10-45+41\\15-15-41+45] \\
+							&= \mqty[5\\5\\6\\4].
+						\end{align*}
+						Then the transformed equation is 
+						\[
+							\mat{U}\tilde{x}=\tilde{y} \implies \mqty[2&1&1&0\\0&1&1&1\\0&0&2&2\\0&0&0&2] \mqty[\tilde{x}_1\\\tilde{x}_2\\\tilde{x}_3\\\tilde{x}_4] = \mqty[5\\5\\6\\4].
+						\]
+						Starting at the bottom, clearly \(\tilde{x}_4 = 2\). Then we have \(2\tilde{x}_3+2\tilde{x}_4=6\implies 2\tilde{x}_3+4=6\implies \tilde{x}_3=1\). Then we have \(\tilde{x}_2+\tilde{x}_3+\tilde{x}_4=5\implies \tilde{x}_2+1+2=5\implies \tilde{x}_2=2\). Finally, we have \(2\tilde{x}_1+\tilde{x}_2+\tilde{x}_3=5\implies 2\tilde{x}_1 + 2 + 1 = 5\implies \tilde{x}_1 = 1\). So,
+						\[
+							\boxed{\tilde{x} = \mqty[1\\2\\1\\2]}	.
+						\]
 		            \end{answer}
 	      \end{enumerate}
 
