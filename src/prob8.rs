@@ -170,7 +170,7 @@ fn rank_k_approx<T: ComplexField, R: DimMin<C>, C: Dim>(
     k: usize,
     prev: &Matrix<T, R, C, impl Storage<T, R, C>>,
     prev_k: usize,
-) -> Matrix<T, R, C, <nalgebra::DefaultAllocator as nalgebra::allocator::Allocator<T, R, C>>::Buffer>
+) -> Matrix<T, R, C, <DefaultAllocator as Allocator<T, R, C>>::Buffer>
 where
     DefaultAllocator: Allocator<T, DimMinimum<R, C>, C>
         + Allocator<T, R, DimMinimum<R, C>>
