@@ -7,3 +7,7 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q(From Golub and van Loan) Given \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, let \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q denote the largest singular value of \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qlatinmodern-math.otf texgyrepagella-math.otf[range=bb]\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qlatinmodern-math.otf texgyrepagella-math.otf[range=bb]\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QPlots showing all normalized singular values of hokiebirdwithacat, split into red, green, and blue components.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe code for this question is given below: [fontsize=]src/prob8.rs\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe code for this question is given below: [fontsize=]src/prob7.rs\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qcompat=1.18 fillbetween groupplots\\E$"}
