@@ -94,69 +94,69 @@
 
 	      Let \(M\) be \(n \times n\) and positive definite and L be its Cholesky factor so that \(M = \mat{L}\mat{L}^\top\). Show that \(\|M\|_2 = \|L\|_2^2\) and \(\kappa_2(\mat{M}) = \kappa_2(\mat{L})^2\).
 	      \begin{proof}
-				We have 
-				\begin{equation*}
-					\norm{\mat{A}^\top \mat{A}}_2 = \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) } %\label{eq:2normnormal}
-				\end{equation*}
-				since \(\mat{A}^\top \mat{A}\) is normal, and
-				\begin{equation*}
-					\norm{\mat{A}}^2_2 = \sqrt{ \max_i \lambda_i(\mat{A}^\top \mat{A}) } ^2= \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) }.
-				\end{equation*}
-				So \(\|\mat{A}^\top\mat{A}\|_2 = \|\mat{A}\|_2^2\).
+		      We have
+		      \begin{equation*}
+			      \norm{\mat{A}^\top \mat{A}}_2 = \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) } %\label{eq:2normnormal}
+		      \end{equation*}
+		      since \(\mat{A}^\top \mat{A}\) is normal, and
+		      \begin{equation*}
+			      \norm{\mat{A}}^2_2 = \sqrt{ \max_i \lambda_i(\mat{A}^\top \mat{A}) } ^2= \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) }.
+		      \end{equation*}
+		      So \(\|\mat{A}^\top\mat{A}\|_2 = \|\mat{A}\|_2^2\).
 
-				Next, we have 
-				\begin{align*}
-					\kappa_2(\mat{A}^\top \mat{A}) & = \norm{(\mat{A}^\top \mat{A})^{-1}}_2 \norm{\mat{A}^\top \mat{A}}_2 \\
-					                               & = \max_i \abs{ \lambda_i((\mat{A}^\top \mat{A})^{-1} )} \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) } \\
-									               & = \frac{1}{\sigma_m^2} \sigma_1^2 \\
-									               & = \frac{\sigma_1^2}{\sigma_m^2},
-				\end{align*}
-				where \(\sigma_i\) is the \(i^{\text{th}}\) singular value of \(\mat{A}\) in descending order. Further,
-				\begin{align*}
-					\kappa_2(\mat{A})^2 & = \qty(\frac{\sigma_1}{\sigma_m})^2 \\
-					                    & = \frac{\sigma_1^2}{\sigma_m^2}.
-				\end{align*}
-				Note, we may have \(\sigma_m=0\) if TODO CHECK WORDING \(\mat{A}\) is not full rank. In this case, we still have \(\kappa_2(\mat{A}^\top \mat{A})=\infty=\kappa_2(\mat{A})^2\).
+		      Next, we have
+		      \begin{align*}
+			      \kappa_2(\mat{A}^\top \mat{A}) & = \norm{(\mat{A}^\top \mat{A})^{-1}}_2 \norm{\mat{A}^\top \mat{A}}_2                                   \\
+			                                     & = \max_i \abs{ \lambda_i((\mat{A}^\top \mat{A})^{-1} )} \max_i \abs{ \lambda_i(\mat{A}^\top \mat{A}) } \\
+			                                     & = \frac{1}{\sigma_m^2} \sigma_1^2                                                                      \\
+			                                     & = \frac{\sigma_1^2}{\sigma_m^2},
+		      \end{align*}
+		      where \(\sigma_i\) is the \(i^{\text{th}}\) singular value of \(\mat{A}\) in descending order. Further,
+		      \begin{align*}
+			      \kappa_2(\mat{A})^2 & = \qty(\frac{\sigma_1}{\sigma_m})^2 \\
+			                          & = \frac{\sigma_1^2}{\sigma_m^2}.
+		      \end{align*}
+		      Note, we may have \(\sigma_m=0\) if TODO CHECK WORDING \(\mat{A}\) is not full rank. In this case, we still have \(\kappa_2(\mat{A}^\top \mat{A})=\infty=\kappa_2(\mat{A})^2\).
 
-				Next, for \(\mat{M} = \mat{L}\mat{L}^\top\), we have 
-				\begin{align*}
-					\norm{\mat{M}}_2 & = \norm{\mat{L}\mat{L}^\top}_2 = \max_i \abs{ \lambda_i(\mat{L}\mat{L}^\top) } \\
-					\text{and }\norm{\mat{L}}_2^2 &= \sqrt{\max_i\lambda_i(\mat{L}^\top\mat{L})}^2 = \max_i \abs{ \lambda_i(\mat{L}^\top\mat{L}) }.
-				\end{align*}
-				By \cref{lem:eigenvalsLLT} these are equivalent.
+		      Next, for \(\mat{M} = \mat{L}\mat{L}^\top\), we have
+		      \begin{align*}
+			      \norm{\mat{M}}_2              & = \norm{\mat{L}\mat{L}^\top}_2 = \max_i \abs{ \lambda_i(\mat{L}\mat{L}^\top) }                   \\
+			      \text{and }\norm{\mat{L}}_2^2 & = \sqrt{\max_i\lambda_i(\mat{L}^\top\mat{L})}^2 = \max_i \abs{ \lambda_i(\mat{L}^\top\mat{L}) }.
+		      \end{align*}
+		      By \cref{lem:eigenvalsLLT} these are equivalent.
 
-				Finally, for the condition number of \(\mat{M}\) we have
-				\begin{align*}
-					\kappa_2(\mat{M}) & = \kappa_2(\mat{L}\mat{L}^\top) \\
-					                  & = \norm{(\mat{L}\mat{L}^\top)^{-1}}_2 \norm{\mat{L}\mat{L}^\top}_2 \\
-									  & = \max_i \abs{ \lambda_i\qty((\mat{L}\mat{L}^\top)^{-1} )} \max_i \abs{ \lambda_i(\mat{L}\mat{L}^\top) } \\
-									  & = \frac{1}{\lambda_m} \lambda_1 \\
-									  & = \frac{\sigma_1^2}{\sigma_m^2}.
-				\end{align*}
-				Since \(\mat{M}\) is positive definite, we know \(\sigma_i>0\) for all \(i\), so this value is finite. Further,
-				\begin{align*}
-					\kappa_2(\mat{L})^2 & = \qty(\frac{\sigma_1}{\sigma_m})^2 \\
-					                    & = \frac{\sigma_1^2}{\sigma_m^2}.
-				\end{align*}
-				Thus, \(\kappa_2(\mat{M}) = \kappa_2(\mat{L})^2\).
+		      Finally, for the condition number of \(\mat{M}\) we have
+		      \begin{align*}
+			      \kappa_2(\mat{M}) & = \kappa_2(\mat{L}\mat{L}^\top)                                                                          \\
+			                        & = \norm{(\mat{L}\mat{L}^\top)^{-1}}_2 \norm{\mat{L}\mat{L}^\top}_2                                       \\
+			                        & = \max_i \abs{ \lambda_i\qty((\mat{L}\mat{L}^\top)^{-1} )} \max_i \abs{ \lambda_i(\mat{L}\mat{L}^\top) } \\
+			                        & = \frac{1}{\lambda_m} \lambda_1                                                                          \\
+			                        & = \frac{\sigma_1^2}{\sigma_m^2}.
+		      \end{align*}
+		      Since \(\mat{M}\) is positive definite, we know \(\sigma_i>0\) for all \(i\), so this value is finite. Further,
+		      \begin{align*}
+			      \kappa_2(\mat{L})^2 & = \qty(\frac{\sigma_1}{\sigma_m})^2 \\
+			                          & = \frac{\sigma_1^2}{\sigma_m^2}.
+		      \end{align*}
+		      Thus, \(\kappa_2(\mat{M}) = \kappa_2(\mat{L})^2\).
 	      \end{proof}
 
-		  % lemma for 1
-		  \begin{lemma}\label{lem:eigenvalsLLT}
-			If \(\vec{v}\) is an eigenvector of \(\mat{L}\mat{L}^\top\), with \(\lambda\) its eigenvalue, then \(\lambda\) is an eigenvalue of \(\mat{L}^\top\mat{L}\), with eigenvector \(\mat{L}^\top \vec{v}\).
-		  \end{lemma}
-		  \begin{proof}
-			We have 
-			\begin{alignat}{4}
-				         && \mat{L}\mat{L}^\top \vec{v} & = \lambda \vec{v} \label{eq:eigenval}\\
-				\implies && \qty(\mat{L}^\top\mat{L}) \qty(\mat{L}^\top \vec{v}) & = \lambda \qty(\mat{L}^\top\vec{v}).\nonumber
-			\end{alignat}
-			For \(\vec{v}\not\in\ker(\mat{L}^\top)\). Suppose for contradiction that \(\vec{v}\in\ker(\mat{L}^\top)\). Then \cref{eq:eigenval} is 
-			\[
-				\mat{L}\underbrace{\mat{L}^\top \vec{v}}_{=0} = \lambda \vec{v} \implies \lambda = 0,	
-			\]
-			which is absurd since the eigenvalues of a positive definite matrix are non-zero. Thus, we have \(\vec{v}\not\in\ker(\mat{L}^\top)\), and so \(\lambda\) is always an eigenvalue of \(\mat{L}^\top\mat{L}\).
-		  \end{proof}
+	      % lemma for 1
+	      \begin{lemma}\label{lem:eigenvalsLLT}
+		      If \(\vec{v}\) is an eigenvector of \(\mat{L}\mat{L}^\top\), with \(\lambda\) its eigenvalue, then \(\lambda\) is an eigenvalue of \(\mat{L}^\top\mat{L}\), with eigenvector \(\mat{L}^\top \vec{v}\).
+	      \end{lemma}
+	      \begin{proof}
+		      We have
+		      \begin{alignat}{4}
+			               &  & \mat{L}\mat{L}^\top \vec{v}                          & = \lambda \vec{v} \label{eq:eigenval}         \\
+			      \implies &  & \qty(\mat{L}^\top\mat{L}) \qty(\mat{L}^\top \vec{v}) & = \lambda \qty(\mat{L}^\top\vec{v}).\nonumber
+		      \end{alignat}
+		      For \(\vec{v}\not\in\ker(\mat{L}^\top)\). Suppose for contradiction that \(\vec{v}\in\ker(\mat{L}^\top)\). Then \cref{eq:eigenval} is
+		      \[
+			      \mat{L}\underbrace{\mat{L}^\top \vec{v}}_{=0} = \lambda \vec{v} \implies \lambda = 0,
+		      \]
+		      which is absurd since the eigenvalues of a positive definite matrix are non-zero. Thus, we have \(\vec{v}\not\in\ker(\mat{L}^\top)\), and so \(\lambda\) is always an eigenvalue of \(\mat{L}^\top\mat{L}\).
+	      \end{proof}
 
 	      % 2
 	\item In this question we will ask how to solve \(\mat{B}\vec{y} = \vec{c}\) given a fast way to solve \(\mat{A}\vec{x} = \vec{b}\), where \(\mat{A} - \mat{B}\) is ``small'' in some sense.
@@ -235,12 +235,12 @@
 	      \begin{enumerate}
 		      \item Calculate the appropriate determinants to show that \(\mat{A}\) can be written as \(\mat{A} = \mat{L}\mat{U}\) where \(\mat{L}\) is a unit lower triangular matrix and \(\mat{U}\) is a non-singular upper triangular matrix. You may use MATLAB to compute the determinants. But the remaining parts of this problem should be done by paper-and-pencil.
 		            \begin{answer}
-						\begin{align*}
-							\det\mat{A}_1 & = \mqty|1| = 1 \\
-							\det\mat{A}_2 & = \mqty|2 & 1 \\ 4 & 3| = 2 \\
-							\det\mat{A}_3 & = \mqty|2 & 1 & 1 \\ 4 & 3 & 3 \\ 8 & 7 & 9| = (2)(6)-(1)(12)+(1)(4) = 4 \\
-							\det\mat{A}_4 & = \mqty|2 & 1 & 1 & 0 \\ 4 & 3 & 3 & 1 \\ 8 & 7 & 9 & 5 \\ 6 & 7 & 9 & 8|
-						\end{align*}
+			            \begin{align*}
+				            \det\mat{A}_1 & = \mqty|1| = 1             \\
+				            \det\mat{A}_2 & = \mqty|2      & 1         \\ 4 & 3| = 2 \\
+				            \det\mat{A}_3 & = \mqty|2      & 1 & 1     \\ 4 & 3 & 3 \\ 8 & 7 & 9| = (2)(6)-(1)(12)+(1)(4) = 4 \\
+				            \det\mat{A}_4 & = \mqty|2      & 1 & 1 & 0 \\ 4 & 3 & 3 & 1 \\ 8 & 7 & 9 & 5 \\ 6 & 7 & 9 & 8|
+			            \end{align*}
 		            \end{answer}
 
 		      \item Compute the LU decomposition \(\mat{A} = \mat{L}\mat{U}\) and convert \(\mat{A}x = b\) into \(\mat{U}x = y\) where \(\mat{U}\) is upper triangular and solve for \(x\).
@@ -497,11 +497,10 @@
 				            \end{subfigure}
 				            \caption{Original fingerprint image compared to its optimal rank-\(k \) approximations.}\label{fig:Thums}
 			            \end{figure}
-			            The code is given below:
+			            The code for this question is given below:
 			            \begin{mdframed}[backgroundcolor=lightgray]
 				            \rustcode[fontsize=\footnotesize]{src/prob7.rs}
 			            \end{mdframed}
-
 		            \end{answer}
 	      \end{enumerate}
 
@@ -512,6 +511,7 @@
 	      \begin{enumerate}
 		      \item Compute the SVDs of every layer A1, A2, and A3. Then compute the vector of normalized singular values for every layer. Using the subplot comment (and logarithmic y-axis), plot all three vectors in Figure 2.
 		            \begin{answer}
+			            The normalized singular values for each channel can be found in \cref{fig:birdsingvals}. Note that the color of the plot indicates which channel the singular values are from.
 			            \begin{figure}[H]
 				            \centering\begin{tikzpicture}
 					            \begin{groupplot}[
@@ -541,7 +541,8 @@
 							            ] {out/all_singular_values8.dat};
 					            \end{groupplot}
 				            \end{tikzpicture}
-				            \caption{Plots showing all normalized singular values of hokiebirdwithacat, split into red, green, and blue components.}\label{fig:birdsingvals}
+				            \caption{Plots showing all normalized singular values of hokiebirdwithacat, split into red, green, and blue components. The color of the plot indicates which component the singular values were calculated from}
+				            \label{fig:birdsingvals}
 			            \end{figure}
 		            \end{answer}
 
@@ -557,7 +558,32 @@
 
 		            So, you will have three approximations. For each case, plot the low-rank image (either as a new figure or all in one plot using subplot). These plots need to be attached to the .pdf file. Make sure to clearly indicate the rank of ever layer and which plot corresponds to which error tolerance. Did you obtain the same k value for every layer? Comment on your results.
 		            \begin{answer}
-
+			            The approximations can be found in \cref{fig:equal-tol}. Note that different \(k\) values are chosen per channel, and that the red channel always uses the smallest \(k\), while blue uses the largest.
+			            \begin{figure}[H]
+				            \centering
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/RGB Image Conversion Check.png}
+					            \caption{Original Image}
+				            \end{subfigure}\hfill
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/err_all_0.1_Approximation.png}
+					            \caption{\(tol = 10\%,\ k = 6, 7, 10\)}
+				            \end{subfigure}\hfill
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/err_all_0.05_Approximation.png}
+					            \caption{\(tol = 5\%,\ k = 12, 17, 23\)}
+				            \end{subfigure}\hfill
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/err_all_0.01_Approximation.png}
+					            \caption{\(tol = 1\%,\ k = 66, 89, 119\)}
+					            \label{fig:1-percent-tol}
+				            \end{subfigure}
+				            \caption{Original hokie bird image compared to its optimal approximations for different error tolerances. Selected \(k\) values for the given tolerances are shown.}\label{fig:equal-tol}
+			            \end{figure}
 		            \end{answer}
 
 		      \item \underline{Use different error tolerances for different layers}: Now we will choose different tolerances for different values. Pick three different selections:
@@ -568,7 +594,36 @@
 		            \end{itemize}
 		            So, you will have three approximations. For each case, plot the low-rank image (either as a new figure or all in one plot using subplot). These plots need to be attached to the .pdf file. Make sure to clearly indicate the rank of ever layer and which plot corresponds to which error tolerance. Comment on your results.
 		            \begin{answer}
+			            The approximations can be found in \cref{fig:channel-tol}. Note that the chosen \(k\) values are only for the channel with the 50\% error tolerance - since the \(k\) values for 1\% error tolerance in each channel are given in \cref{fig:1-percent-tol} above. The 50\% error in blue looks much clearer than the other two channels - this is probably due to the relative lack of blue in the original image compared to the other two channels. Interestingly, the chosen \(k = 1\) for all channels - since the rank 1 approximation of each channel includes more than 50\% of the original information.
+			            \begin{figure}[H]
+				            \centering
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/50-err-red.png}
+					            \caption{Red \(k = 1\)}
+				            \end{subfigure}\qquad
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/50-err-green.png}
+					            \caption{Green \(k = 1\)}
+				            \end{subfigure}\qquad
+				            \begin{subfigure}{0.225\textwidth}
+					            \centering
+					            \includegraphics[width=\textwidth]{out/50-err-blue.png}
+					            \caption{Blue \(k = 1\)}
+				            \end{subfigure}
+				            \caption{Optimal approximations with a single channel constrained to 50\% error tolerance, with the rest of the channels at 1\%. The channel with 50\% tolerance is labeled, in addition to its chosen \(k\) value.}\label{fig:channel-tol}
+			            \end{figure}
 
+			            The code for this question is given below:
+			            \begin{mdframed}[backgroundcolor=lightgray]
+				            \rustcode[fontsize=\footnotesize]{src/prob8.rs}
+			            \end{mdframed}
+
+			            As well, additional output information, such as the actual computed relative errors of approximations, as well as verification of the correctly chosen \(k\) values, can be found below:
+			            \begin{mdframed}[backgroundcolor=lightgray]
+				            \inputminted{text}{out/prob8-output.txt}
+			            \end{mdframed}
 		            \end{answer}
 	      \end{enumerate}
 \end{enumerate}
